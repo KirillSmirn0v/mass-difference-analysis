@@ -3,6 +3,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Scanner;
 import java.util.Set;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MDSettings implements SettingsInterface {
@@ -28,20 +29,48 @@ public class MDSettings implements SettingsInterface {
     }
 
     @Override
-    public void readSettingsFromFile(File file) {
+    public void readSettingsFromFile(File file) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(file);
-        Scanner scanner = new Scanner(fileInputStream).useDelimiter("\\Z");
+        Scanner scanner;
 
+        scanner = new Scanner(fileInputStream).useDelimiter("\\Z");
         readElements(scanner);
+        fileInputStream.close();
 
+        scanner = new Scanner(fileInputStream).useDelimiter("\\Z");
         readIonAdducts(scanner);
+        fileInputStream.close();
     }
 
     private void readElements(Scanner scanner) {
-
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            Matcher matcher = patternElements.matcher(line);
+            if (matcher.matches()) {
+                String name = matcher.group(1);
+                double mass = Double.parseDouble(matcher.group(2));
+                int valency = Integer.parseInt(matcher.group(3));
+                elements.add(new Element(name, mass, valency));
+            }
+        }
+        scanner.close();
     }
 
     private void readIonAdducts(Scanner scanner) {
-
+        while (scanner.hasNextLine()) {
+            String line = scanner.nextLine();
+            Matcher matcher = patternIonAdducts.matcher(line);
+            if (matcher.matches()) {
+                String name = matcher.group(1);
+                double mass = Double.parseDouble(matcher.group(2));
+                String ionSign = matcher.group(3);
+                if (ionSign.equals("POS")) {
+                    ionAdducts.add(new IonAdduct(name, IonAdduct.IonSign.POSITIVE, mass));
+                } else if (ionSign.equals("NEG")){
+                    ionAdducts.add(new IonAdduct(name, IonAdduct.IonSign.NEGATIVE, mass));
+                }
+            }
+        }
+        scanner.close();
     }
 }
