@@ -35,4 +35,22 @@ public class IonAdduct {
             return sign;
         }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        IonAdduct ionAdduct = (IonAdduct) o;
+
+        if (!name.equals(ionAdduct.name)) return false;
+        return ionSign == ionAdduct.ionSign;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + ionSign.hashCode();
+        return result;
+    }
 }

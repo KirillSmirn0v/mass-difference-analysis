@@ -20,4 +20,22 @@ public class Element {
     public int getValency() {
         return valency;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Element element = (Element) o;
+
+        if (valency != element.valency) return false;
+        return name.equals(element.name);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name.hashCode();
+        result = 31 * result + valency;
+        return result;
+    }
 }
