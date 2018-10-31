@@ -10,8 +10,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class MDSettings extends Observable implements SettingsInterface {
-    private static Pattern patternElements = Pattern.compile("^Element:\\s+([A-Z][a-z]?)\\s+(\\d+\\.?\\d*)\\s+(\\d+)$");
-    private static Pattern patternIonAdducts = Pattern.compile("^Ion:\\s+(\\S+)\\s+(\\d+\\.?\\d*)\\s+(POS|NEG)$");
+    private static Pattern patternElements = Pattern.compile("^element:\\s+([A-Z][a-z]?)\\s+(\\d+\\.?\\d*)\\s+(\\d+)$");
+    private static Pattern patternIonAdducts = Pattern.compile("^ion:\\s+(\\S+)\\s+(\\d+\\.?\\d*)\\s+(POS|NEG)$");
 
     private Set<Element> elements;
     private Map<String, Element> name2ElementMap;
