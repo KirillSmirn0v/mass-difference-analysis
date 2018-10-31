@@ -1,3 +1,5 @@
+package mdCoreElements;
+
 public class Element {
     private String name;
     private double mass;

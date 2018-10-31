@@ -1,8 +1,10 @@
+package abstracts;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The basic class representing a graph.
+ * The basic class representing a abstracts.
  * @param <N> generic parameter representing a node.
  * @param <E> generic parameter representing an edge.
  */

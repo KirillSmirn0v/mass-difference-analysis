@@ -1,3 +1,7 @@
+package utils;
+
+import mdCoreElements.Element;
+
 import java.util.Map;
 
 public class MDUtils {

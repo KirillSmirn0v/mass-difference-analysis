@@ -1,3 +1,5 @@
+package mdCoreElements;
+
 public class IonAdduct {
     private String name;
     private IonSign ionSign;
