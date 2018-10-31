@@ -1,17 +1,21 @@
 import java.io.File;
-import java.util.List;
+import java.util.*;
+import java.util.function.Predicate;
 
-public class MDGraphSettings implements GraphSettingsInterface {
+public class MDGraphSettings implements GraphSettingsInterface, Observer {
+    private MDSettings mdSettings;
     private List<MassDifference> massDifferences;
     private double edgeCreationError;
 
-    public MDGraphSettings() {
+    public MDGraphSettings(MDSettings mdSettings) {
+        this.mdSettings = mdSettings;
+        mdSettings.addObserver(this);
         setDefaults();
     }
 
     @Override
     public void setDefaults() {
-        // TODO: fix the mass differences
+        Map<Element, Integer> formula = new HashMap<>();
 
         edgeCreationError = 0.1;
     }
@@ -29,5 +33,13 @@ public class MDGraphSettings implements GraphSettingsInterface {
 
     public double getEdgeCreationError() {
         return edgeCreationError;
+    }
+
+    @Override
+    public void update(Observable o, Object arg) {
+        Set<Element> elements = mdSettings.getElements();
+        Predicate<MassDifference> predicate = massDifference ->
+            !elements.containsAll(massDifference.getFormula().keySet());
+        massDifferences.removeIf(predicate);
     }
 }

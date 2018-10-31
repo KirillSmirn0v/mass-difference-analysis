@@ -1,17 +1,18 @@
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Observable;
 import java.util.Scanner;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MDSettings implements SettingsInterface {
+public class MDSettings extends Observable implements SettingsInterface {
     private static Pattern patternElements = Pattern.compile("^Element:\\s+([A-Z][a-z]?)\\s+(\\d+\\.?\\d*)\\s+(\\d+)$");
     private static Pattern patternIonAdducts = Pattern.compile("^Ion:\\s+(\\S+)\\s+(\\d+\\.?\\d*)\\s+(POS|NEG)$");
 
-    private Set<Element> elements;
-    private Set<IonAdduct> ionAdducts;
+    private static Set<Element> elements;
+    private static Set<IonAdduct> ionAdducts;
 
     public MDSettings() {
         setDefaults();
@@ -40,6 +41,16 @@ public class MDSettings implements SettingsInterface {
         scanner = new Scanner(fileInputStream).useDelimiter("\\Z");
         readIonAdducts(scanner);
         fileInputStream.close();
+
+        notifyObservers();
+    }
+
+    public Set<Element> getElements() {
+        return elements;
+    }
+
+    public Set<IonAdduct> getIonAdducts() {
+        return ionAdducts;
     }
 
     private void readElements(Scanner scanner) {
