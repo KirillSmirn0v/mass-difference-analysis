@@ -44,4 +44,8 @@ public class ExpMassReader {
 
         scanner.close();
     }
+
+    public List<ExpMass> getExpMasses() {
+        return expMasses;
+    }
 }
