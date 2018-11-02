@@ -17,6 +17,11 @@ public abstract class Graph<N, E> {
         edges = new ArrayList<>();
     }
 
+    public Graph(List<N> nodes) {
+        this.nodes = nodes;
+        edges = new ArrayList<>();
+    }
+
     public void addNode(N node) {
         nodes.add(node);
     }

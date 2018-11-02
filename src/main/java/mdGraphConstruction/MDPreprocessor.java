@@ -3,6 +3,7 @@ package mdGraphConstruction;
 import mdCoreData.ExpMass;
 import mdCoreElements.IonAdduct;
 import mdGraphElements.MDGraphSettings;
+import mdGraphElements.MassDifference;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,5 +39,13 @@ public class MDPreprocessor {
 
     public List<MassWrapper> getMassWrappers() {
         return massWrappers;
+    }
+
+    public Set<MassDifference> getMassDifferences() {
+        return mdGraphSettings.getMassDifferences();
+    }
+
+    public double getEdgeCreationError() {
+        return mdGraphSettings.getEdgeCreationError();
     }
 }
