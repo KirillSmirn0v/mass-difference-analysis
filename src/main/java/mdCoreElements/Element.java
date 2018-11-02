@@ -11,6 +11,10 @@ public class Element {
         this.valency = valency;
     }
 
+    public Element(Element element) {
+        this(element.getName(), element.getMass(), element.getValency());
+    }
+
     public String getName() {
         return name;
     }

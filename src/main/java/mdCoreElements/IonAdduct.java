@@ -11,6 +11,10 @@ public class IonAdduct {
         this.mass = mass;
     }
 
+    public IonAdduct(IonAdduct ionAdduct) {
+        this(ionAdduct.getName(), ionAdduct.getIonSign(), ionAdduct.getMass());
+    }
+
     public String getName() {
         return name;
     }

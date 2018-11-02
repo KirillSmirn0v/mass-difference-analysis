@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.*;
-import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -20,7 +19,7 @@ public class MDGraphSettings implements GraphSettingsInterface {
     private double edgeCreationError;
 
     public MDGraphSettings(MDSettings mdSettings) {
-        this.mdSettings = mdSettings;
+        this.mdSettings = new MDSettings(mdSettings);
         this.massDifferences = new HashSet<>();
         setDefaults();
     }

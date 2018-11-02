@@ -24,6 +24,21 @@ public class MDSettings implements SettingsInterface {
         setDefaults();
     }
 
+    public MDSettings(MDSettings mdSettings) {
+        elements = new HashSet<>();
+        name2ElementMap = new HashMap<>();
+        ionAdducts = new HashSet<>();
+        for (Element element : mdSettings.getElements()) {
+            Element elementCopy = new Element(element);
+            elements.add(elementCopy);
+            name2ElementMap.put(elementCopy.getName(), elementCopy);
+        }
+        for (IonAdduct ionAdduct : mdSettings.getIonAdducts()) {
+            IonAdduct ionAdductCopy = new IonAdduct(ionAdduct);
+            ionAdducts.add(ionAdductCopy);
+        }
+    }
+
     @Override
     public void setDefaults() {
         Element carbon = new Element("C", 12.000000, 4);
