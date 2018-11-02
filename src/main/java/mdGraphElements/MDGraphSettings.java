@@ -68,15 +68,24 @@ public class MDGraphSettings implements GraphSettingsInterface {
 
             while (matcher.find()) {
                 String name = matcher.group(1);
-                int count = Integer.parseInt(matcher.group(2));
+                int count = 1;
+                if (!matcher.group(2).isEmpty()) {
+                    count = Integer.parseInt(matcher.group(2));
+                }
                 if (elementNames.contains(name)) {
-                    formula.put(name2ElementMap.get(name), count);
+                    Element element = name2ElementMap.get(name);
+                    if (formula.containsKey(element)) {
+                        formula.put(element, formula.get(element) + count);
+                    } else {
+                        formula.put(name2ElementMap.get(name), count);
+                    }
                 } else {
                     continue outerLoop;
                 }
             }
 
             MassDifference massDifference = new MassDifference(id, line, formula);
+            this.massDifferences.add(massDifference);
             id++;
         }
         scanner.close();

@@ -34,6 +34,7 @@ public class MassDifference {
         return mass;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -41,14 +42,24 @@ public class MassDifference {
 
         MassDifference that = (MassDifference) o;
 
-        if (id != that.id) return false;
         return formula.equals(that.formula);
     }
 
     @Override
     public int hashCode() {
-        int result = id;
-        result = 31 * result + formula.hashCode();
-        return result;
+        return formula.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        for (Map.Entry<Element, Integer> entry : formula.entrySet()) {
+            sb.append(entry.getKey().getName());
+            int amount = entry.getValue();
+            if (amount > 1) {
+                sb.append(amount);
+            }
+        }
+        return sb.toString();
     }
 }
