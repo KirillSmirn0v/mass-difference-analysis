@@ -11,7 +11,7 @@ public class MassWrapper {
     public MassWrapper(ExpMass expMass, IonAdduct ionAdduct) {
         this.expMass = expMass;
         this.ionAdduct = ionAdduct;
-        this.mass = expMass.getMass();
+        this.mass = expMass.getMass() + ionAdduct.getMass();
     }
 
     public ExpMass getExpMass() {

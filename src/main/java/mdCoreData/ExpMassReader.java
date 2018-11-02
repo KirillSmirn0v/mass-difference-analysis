@@ -44,8 +44,8 @@ public class ExpMassReader {
 
         expMasses.sort((o1, o2) -> {
             double diff = o2.getMass() - o1.getMass();
-            if (diff > 0) return 1;
-            return 0;
+            if (diff > 0) return -1;
+            return 1;
         });
 
         scanner.close();
