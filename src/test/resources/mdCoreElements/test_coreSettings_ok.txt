@@ -1,0 +1,6 @@
+element:    N   14.25   4
+element:    Me  15.00   2
+element:    C   12      4
+
+ion:    [M-H]-  -1.001  NEG
+ion:    [M+K]+  5       POS

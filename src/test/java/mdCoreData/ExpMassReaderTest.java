@@ -12,8 +12,8 @@ import java.util.List;
 
 public class ExpMassReaderTest {
     private static final Path BASE_PATH = Paths.get("src/test/resources");
-    private static final File TEST_DATAFILE_OK = BASE_PATH.resolve("test_dataFile_ok.txt").toFile();
-    private static final File TEST_DATAFILE_DUPLICATEIDS = BASE_PATH.resolve("test_dataFile_duplicateIds.txt").toFile();
+    private static final File TEST_DATAFILE_OK = BASE_PATH.resolve("mdCoreData/test_dataFile_ok.txt").toFile();
+    private static final File TEST_DATAFILE_DUPLICATEIDS = BASE_PATH.resolve("mdCoreData/test_dataFile_duplicateIds.txt").toFile();
 
     private ExpMassReader expMassReader = null;
 

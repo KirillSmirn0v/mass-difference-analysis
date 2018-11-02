@@ -12,7 +12,7 @@ import java.util.function.Predicate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MDGraphSettings implements GraphSettingsInterface, Observer {
+public class MDGraphSettings implements GraphSettingsInterface {
     private static Pattern patternElementCounts = Pattern.compile("([A-Z][a-z]?)(\\d*)");
 
     private MDSettings mdSettings;
@@ -22,7 +22,6 @@ public class MDGraphSettings implements GraphSettingsInterface, Observer {
     public MDGraphSettings(MDSettings mdSettings) {
         this.mdSettings = mdSettings;
         this.massDifferences = new HashSet<>();
-        mdSettings.addObserver(this);
         setDefaults();
     }
 
@@ -94,13 +93,5 @@ public class MDGraphSettings implements GraphSettingsInterface, Observer {
 
     public double getEdgeCreationError() {
         return edgeCreationError;
-    }
-
-    @Override
-    public void update(Observable o, Object arg) {
-        Set<Element> elements = mdSettings.getElements();
-        Predicate<MassDifference> predicate = massDifference ->
-            !elements.containsAll(massDifference.getFormula().keySet());
-        massDifferences.removeIf(predicate);
     }
 }

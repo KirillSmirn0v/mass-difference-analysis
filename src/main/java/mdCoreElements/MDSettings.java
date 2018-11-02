@@ -9,9 +9,9 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MDSettings extends Observable implements SettingsInterface {
+public class MDSettings implements SettingsInterface {
     private static Pattern patternElements = Pattern.compile("^element:\\s+([A-Z][a-z]?)\\s+(\\d+\\.?\\d*)\\s+(\\d+)$");
-    private static Pattern patternIonAdducts = Pattern.compile("^ion:\\s+(\\S+)\\s+(\\d+\\.?\\d*)\\s+(POS|NEG)$");
+    private static Pattern patternIonAdducts = Pattern.compile("^ion:\\s+(\\S+)\\s+(-?\\d+\\.?\\d*)\\s+(POS|NEG)$");
 
     private Set<Element> elements;
     private Map<String, Element> name2ElementMap;
@@ -49,17 +49,9 @@ public class MDSettings extends Observable implements SettingsInterface {
     @Override
     public void readSettingsFromFile(File file) throws IOException {
         FileInputStream fileInputStream = new FileInputStream(file);
-        Scanner scanner;
-
-        scanner = new Scanner(fileInputStream).useDelimiter("\\Z");
-        readElements(scanner);
+        Scanner scanner = new Scanner(fileInputStream).useDelimiter("\\Z");
+        readElementsAndIonAdducts(scanner);
         fileInputStream.close();
-
-        scanner = new Scanner(fileInputStream).useDelimiter("\\Z");
-        readIonAdducts(scanner);
-        fileInputStream.close();
-
-        notifyObservers();
     }
 
     public Set<Element> getElements() {
@@ -74,35 +66,26 @@ public class MDSettings extends Observable implements SettingsInterface {
         return ionAdducts;
     }
 
-    private void readElements(Scanner scanner) {
+    private void readElementsAndIonAdducts(Scanner scanner) {
         elements = new HashSet<>();
         name2ElementMap = new HashMap<>();
-
-        while (scanner.hasNextLine()) {
-            String line = scanner.nextLine();
-            Matcher matcher = patternElements.matcher(line);
-            if (matcher.matches()) {
-                String name = matcher.group(1);
-                double mass = Double.parseDouble(matcher.group(2));
-                int valency = Integer.parseInt(matcher.group(3));
-                Element element = new Element(name, mass, valency);
-                elements.add(element);
-                name2ElementMap.put(name, element);
-            }
-        }
-        scanner.close();
-    }
-
-    private void readIonAdducts(Scanner scanner) {
         ionAdducts = new HashSet<>();
 
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
-            Matcher matcher = patternIonAdducts.matcher(line);
-            if (matcher.matches()) {
-                String name = matcher.group(1);
-                double mass = Double.parseDouble(matcher.group(2));
-                String ionSign = matcher.group(3);
+            Matcher matcherElements = patternElements.matcher(line);
+            Matcher matcherIonAdducts = patternIonAdducts.matcher(line);
+            if (matcherElements.matches()) {
+                String name = matcherElements.group(1);
+                double mass = Double.parseDouble(matcherElements.group(2));
+                int valency = Integer.parseInt(matcherElements.group(3));
+                Element element = new Element(name, mass, valency);
+                elements.add(element);
+                name2ElementMap.put(name, element);
+            } else if (matcherIonAdducts.matches()) {
+                String name = matcherIonAdducts.group(1);
+                double mass = Double.parseDouble(matcherIonAdducts.group(2));
+                String ionSign = matcherIonAdducts.group(3);
                 if (ionSign.equals("POS")) {
                     ionAdducts.add(new IonAdduct(name, IonAdduct.IonSign.POSITIVE, mass));
                 } else if (ionSign.equals("NEG")){
@@ -110,6 +93,5 @@ public class MDSettings extends Observable implements SettingsInterface {
                 }
             }
         }
-        scanner.close();
     }
 }
