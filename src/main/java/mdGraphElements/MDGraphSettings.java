@@ -2,6 +2,7 @@ package mdGraphElements;
 
 import abstracts.GraphSettingsInterface;
 import mdCoreElements.Element;
+import mdCoreElements.IonAdduct;
 import mdCoreElements.MDSettings;
 
 import java.io.File;
@@ -22,6 +23,16 @@ public class MDGraphSettings implements GraphSettingsInterface {
         this.mdSettings = new MDSettings(mdSettings);
         this.massDifferences = new HashSet<>();
         setDefaults();
+    }
+
+    public MDGraphSettings(MDGraphSettings mdGraphSettings) {
+        this.mdSettings = mdGraphSettings.getMDSettings();
+        Set<MassDifference> massDifferencesCopy = new HashSet<>();
+        for (MassDifference massDifference : mdGraphSettings.getMassDifferences()) {
+            MassDifference massDifferenceCopy = new MassDifference(massDifference);
+            massDifferencesCopy.add(massDifferenceCopy);
+        }
+        this.massDifferences = massDifferencesCopy;
     }
 
     @Override
@@ -93,6 +104,18 @@ public class MDGraphSettings implements GraphSettingsInterface {
 
     public void setEdgeCreationError(double edgeCreationError) {
         this.edgeCreationError = edgeCreationError;
+    }
+
+    public Set<Element> getElements() {
+        return mdSettings.getElements();
+    }
+
+    public Set<IonAdduct> getIonAdducts() {
+        return mdSettings.getIonAdducts();
+    }
+
+    public MDSettings getMDSettings() {
+        return mdSettings;
     }
 
     public Set<MassDifference> getMassDifferences() {

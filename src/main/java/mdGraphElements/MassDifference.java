@@ -3,6 +3,7 @@ package mdGraphElements;
 import mdCoreElements.Element;
 import utils.MDUtils;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class MassDifference {
@@ -16,6 +17,18 @@ public class MassDifference {
         this.name = name;
         this.formula = formula;
         this.mass = MDUtils.getMassFromFormula(formula);
+    }
+
+    public MassDifference(MassDifference massDifference) {
+        Map<Element, Integer> formula = massDifference.getFormula();
+        Map<Element, Integer> formulaCopy = new HashMap<>();
+        for (Map.Entry<Element, Integer> entry : formula.entrySet()) {
+            formulaCopy.put(entry.getKey(), entry.getValue());
+        }
+        this.id = massDifference.getId();
+        this.name = massDifference.getName();
+        this.formula = formulaCopy;
+        this.mass = massDifference.getMass();
     }
 
     public int getId() {
