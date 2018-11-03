@@ -4,6 +4,7 @@ import mdCoreElements.Element;
 import mdCoreElements.MDSettings;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
+import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 
 import java.io.File;
