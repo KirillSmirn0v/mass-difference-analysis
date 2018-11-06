@@ -36,6 +36,14 @@ public class MDGraph {
         }
     }
 
+    public List<MassWrapper> getMassWrappers() {
+        return massWrappers;
+    }
+
+    public List<MassEdge> getMassEdges() {
+        return massEdges;
+    }
+
     private boolean validSourceAndTarget(MassWrapper source, MassWrapper target, MassDifference massDifference) {
         double massSource = source.getMass();
         double massTarget = target.getMass();

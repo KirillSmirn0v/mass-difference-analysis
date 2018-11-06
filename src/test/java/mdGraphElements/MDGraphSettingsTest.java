@@ -36,6 +36,7 @@ public class MDGraphSettingsTest {
         mockElements.add(carbon);
         mockElements.add(hydrogen);
         mockElements.add(oxygen);
+        mockElements.add(nitrogen);
         Mockito.when(mockMDSettings.getElements()).thenReturn(mockElements);
         mdGraphSettings = new MDGraphSettings(mockMDSettings);
     }
@@ -60,6 +61,9 @@ public class MDGraphSettingsTest {
         formula = new HashMap<>();
         formula.put(oxygen, 1);
         expectedMassDifferences.add(new MassDifference(3, "O", formula));
+        formula = new HashMap<>();
+        formula.put(nitrogen, 2);
+        expectedMassDifferences.add(new MassDifference(4, "N", formula));
 
         Set<MassDifference> massDifferences = mdGraphSettings.getMassDifferences();
 

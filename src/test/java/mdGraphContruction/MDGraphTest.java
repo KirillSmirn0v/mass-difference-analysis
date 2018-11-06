@@ -1,0 +1,97 @@
+package mdGraphContruction;
+
+import javafx.util.Pair;
+import mdCoreData.ExpMass;
+import mdCoreElements.Element;
+import mdCoreElements.IonAdduct;
+import mdGraphConstruction.MDGraph;
+import mdGraphConstruction.MDPreprocessor;
+import mdGraphConstruction.MassEdge;
+import mdGraphConstruction.MassWrapper;
+import mdGraphElements.MDGraphSettings;
+import mdGraphElements.MassDifference;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.Mockito;
+
+import java.util.*;
+
+public class MDGraphTest {
+    private IonAdduct hydrogenation = new IonAdduct("[M+H]+", IonAdduct.IonSign.POSITIVE, 1.007276);
+    private IonAdduct sodiation = new IonAdduct("[M+Na]+", IonAdduct.IonSign.POSITIVE, 22.989221);
+    private Element carbon = new Element("C", 12.000000, 4);
+    private Element hydrogen = new Element("H", 1.0078250, 1);
+    private Element oxygen = new Element("O", 15.994915, 2);
+
+    private MDGraphSettings mockGraphSettings = null;
+    private MDPreprocessor mockMDPreprocessor = null;
+    private MDGraph mdGraph = null;
+
+    @Before
+    public void before() {
+        mockGraphSettings = Mockito.mock(MDGraphSettings.class);
+        Set<MassDifference> massDifferences = new HashSet<>();
+        Map<Element, Integer> formula;
+        formula = new HashMap<>();
+        formula.put(carbon, 1);
+        formula.put(hydrogen, 2);
+        massDifferences.add(new MassDifference(1, "CH2", formula));
+        formula = new HashMap<>();
+        formula.put(oxygen, 1);
+        massDifferences.add(new MassDifference(2, "O", formula));
+        Mockito.when(mockGraphSettings.getMassDifferences()).thenReturn(massDifferences);
+
+        mockMDPreprocessor = new MDPreprocessor(null, mockGraphSettings);
+        List<MassWrapper> massWrappers = new ArrayList<>();
+        massWrappers.add(new MassWrapper(new ExpMass(1, 181.070665), hydrogenation));
+        massWrappers.add(new MassWrapper(new ExpMass(2, 195.086315), hydrogenation));
+        massWrappers.add(new MassWrapper(new ExpMass(3, 211.081229), hydrogenation));
+        massWrappers.add(new MassWrapper(new ExpMass(4, 217.068259), sodiation));
+        massWrappers.add(new MassWrapper(new ExpMass(5, 233.063173), sodiation));
+        massWrappers.add(new MassWrapper(new ExpMass(6, 249.058088), sodiation));
+        Mockito.when(mockMDPreprocessor.getMassWrappers()).thenReturn(massWrappers);
+        Mockito.when(mockMDPreprocessor.getEdgeCreationError()).thenReturn(0.1);
+
+        mdGraph = new MDGraph(mockMDPreprocessor);
+    }
+
+    @After
+    public void after() {
+        mockMDPreprocessor = null;
+        mdGraph = null;
+    }
+
+    @Test
+    public void test_createEdges_correctEdgesAreCreated() {
+        Map<Integer, List<Pair<Integer, Integer>>> expectedIdMap = new HashMap<>();
+        List<Pair<Integer, Integer>> expectedIdList;
+        expectedIdList = new ArrayList<>();
+        expectedIdList.add(new Pair<>(1, 2));
+        expectedIdList.add(new Pair<>(1, 4));
+        expectedIdMap.put(1, expectedIdList);
+        expectedIdList = new ArrayList<>();
+        expectedIdList.add(new Pair<>(2, 3));
+        expectedIdList.add(new Pair<>(2, 5));
+        expectedIdList.add(new Pair<>(4, 5));
+        expectedIdList.add(new Pair<>(5, 6));
+        expectedIdMap.put(2, expectedIdList);
+
+        mdGraph.createEdges();
+        List<MassEdge> massEdges = mdGraph.getMassEdges();
+        Assert.assertEquals(6, massEdges.size());
+        for (MassEdge massEdge : massEdges) {
+            int idMassDifference = massEdge.getMassDifference().getId();
+            if (expectedIdMap.containsKey(idMassDifference)) {
+                List<Pair<Integer, Integer>> expectedPairs = expectedIdMap.get(idMassDifference);
+                int idSource = massEdge.getSource().getExpMass().getId();
+                int idTarget = massEdge.getTarget().getExpMass().getId();
+                Pair<Integer, Integer> pair = new Pair<>(idSource, idTarget);
+                Assert.assertTrue(expectedPairs.contains(pair));
+            } else {
+                Assert.fail();
+            }
+        }
+    }
+}
