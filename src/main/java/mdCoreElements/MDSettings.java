@@ -1,7 +1,5 @@
 package mdCoreElements;
 
-import abstracts.SettingsInterface;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -9,7 +7,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MDSettings implements SettingsInterface {
+public class MDSettings implements MDSettingsInterface {
     private static Pattern patternElements = Pattern.compile("^element:\\s+([A-Z][a-z]?)\\s+(\\d+\\.?\\d*)\\s+(\\d+)$");
     private static Pattern patternIonAdducts = Pattern.compile("^ion:\\s+(\\S+)\\s+(-?\\d+\\.?\\d*)\\s+(POS|NEG)$");
 
@@ -24,19 +22,10 @@ public class MDSettings implements SettingsInterface {
         setDefaults();
     }
 
-    public MDSettings(MDSettings mdSettings) {
-        elements = new HashSet<>();
-        name2ElementMap = new HashMap<>();
-        ionAdducts = new HashSet<>();
-        for (Element element : mdSettings.getElements()) {
-            Element elementCopy = new Element(element);
-            elements.add(elementCopy);
-            name2ElementMap.put(elementCopy.getName(), elementCopy);
-        }
-        for (IonAdduct ionAdduct : mdSettings.getIonAdducts()) {
-            IonAdduct ionAdductCopy = new IonAdduct(ionAdduct);
-            ionAdducts.add(ionAdductCopy);
-        }
+    private MDSettings(Set<Element> elements, Map<String, Element> name2ElementMap, Set<IonAdduct> ionAdducts) {
+        this.elements = elements;
+        this.name2ElementMap = name2ElementMap;
+        this.ionAdducts = ionAdducts;
     }
 
     @Override
@@ -69,16 +58,36 @@ public class MDSettings implements SettingsInterface {
         fileInputStream.close();
     }
 
+    @Override
     public Set<Element> getElements() {
         return elements;
     }
 
+    @Override
     public Map<String, Element> getName2ElementMap() {
         return name2ElementMap;
     }
 
+    @Override
     public Set<IonAdduct> getIonAdducts() {
         return ionAdducts;
+    }
+
+    @Override
+    public MDSettingsInterface getCopy() {
+        Set<Element> elementsCopy = new HashSet<>();
+        Map<String, Element> name2ElementMapCopy = new HashMap<>();
+        Set<IonAdduct> ionAdductsCopy = new HashSet<>();
+        for (Element element : getElements()) {
+            Element elementCopy = new Element(element);
+            elementsCopy.add(elementCopy);
+            name2ElementMapCopy.put(elementCopy.getName(), elementCopy);
+        }
+        for (IonAdduct ionAdduct : getIonAdducts()) {
+            IonAdduct ionAdductCopy = new IonAdduct(ionAdduct);
+            ionAdductsCopy.add(ionAdductCopy);
+        }
+        return new MDSettings(elementsCopy, name2ElementMapCopy, ionAdductsCopy);
     }
 
     private void readElementsAndIonAdducts(Scanner scanner) {

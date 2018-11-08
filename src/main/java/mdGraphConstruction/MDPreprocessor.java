@@ -3,22 +3,24 @@ package mdGraphConstruction;
 import mdCoreData.ExpMass;
 import mdCoreElements.IonAdduct;
 import mdGraphElements.MDGraphSettings;
+import mdGraphElements.MDGraphSettingsInterface;
 import mdGraphElements.MassDifference;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class MDPreprocessor {
+public class MDPreprocessor implements MDPreprocessorInterface {
     private List<ExpMass> expMasses;
-    private MDGraphSettings mdGraphSettings;
+    private MDGraphSettingsInterface mdGraphSettings;
     private List<MassWrapper> massWrappers;
 
-    public MDPreprocessor(List<ExpMass> expMasses, MDGraphSettings mdGraphSettings) {
+    public MDPreprocessor(List<ExpMass> expMasses, MDGraphSettingsInterface mdGraphSettings) {
         this.expMasses = expMasses;
-        this.mdGraphSettings = new MDGraphSettings(mdGraphSettings);
+        this.mdGraphSettings = mdGraphSettings.getCopy();
     }
 
+    @Override
     public void runPreprocessing() {
         massWrappers = new ArrayList<>();
 
@@ -37,14 +39,17 @@ public class MDPreprocessor {
         });
     }
 
+    @Override
     public List<MassWrapper> getMassWrappers() {
         return massWrappers;
     }
 
+    @Override
     public Set<MassDifference> getMassDifferences() {
         return mdGraphSettings.getMassDifferences();
     }
 
+    @Override
     public double getEdgeCreationError() {
         return mdGraphSettings.getEdgeCreationError();
     }

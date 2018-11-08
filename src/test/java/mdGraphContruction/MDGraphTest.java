@@ -4,17 +4,12 @@ import javafx.util.Pair;
 import mdCoreData.ExpMass;
 import mdCoreElements.Element;
 import mdCoreElements.IonAdduct;
-import mdGraphConstruction.MDGraph;
-import mdGraphConstruction.MDPreprocessor;
-import mdGraphConstruction.MassEdge;
-import mdGraphConstruction.MassWrapper;
-import mdGraphElements.MDGraphSettings;
+import mdGraphConstruction.*;
 import mdGraphElements.MassDifference;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import java.util.*;
 
@@ -25,13 +20,11 @@ public class MDGraphTest {
     private Element hydrogen = new Element("H", 1.0078250, 1);
     private Element oxygen = new Element("O", 15.994915, 2);
 
-    private MDGraphSettings mockGraphSettings = null;
-    private MDPreprocessor mockMDPreprocessor = null;
+    private MDPreprocessorInterface mockMDPreprocessor = null;
     private MDGraph mdGraph = null;
 
     @Before
     public void before() {
-        mockGraphSettings = Mockito.mock(MDGraphSettings.class);
         Set<MassDifference> massDifferences = new HashSet<>();
         Map<Element, Integer> formula;
         formula = new HashMap<>();
@@ -41,9 +34,7 @@ public class MDGraphTest {
         formula = new HashMap<>();
         formula.put(oxygen, 1);
         massDifferences.add(new MassDifference(2, "O", formula));
-        Mockito.when(mockGraphSettings.getMassDifferences()).thenReturn(massDifferences);
 
-        mockMDPreprocessor = new MDPreprocessor(null, mockGraphSettings);
         List<MassWrapper> massWrappers = new ArrayList<>();
         massWrappers.add(new MassWrapper(new ExpMass(1, 181.070665), hydrogenation));
         massWrappers.add(new MassWrapper(new ExpMass(2, 195.086315), hydrogenation));
@@ -51,9 +42,23 @@ public class MDGraphTest {
         massWrappers.add(new MassWrapper(new ExpMass(4, 217.068259), sodiation));
         massWrappers.add(new MassWrapper(new ExpMass(5, 233.063173), sodiation));
         massWrappers.add(new MassWrapper(new ExpMass(6, 249.058088), sodiation));
-        Mockito.when(mockMDPreprocessor.getMassWrappers()).thenReturn(massWrappers);
-        Mockito.when(mockMDPreprocessor.getEdgeCreationError()).thenReturn(0.1);
 
+        mockMDPreprocessor = new MockMDPreprocessor() {
+            @Override
+            public Set<MassDifference> getMassDifferences() {
+                return massDifferences;
+            }
+
+            @Override
+            public List<MassWrapper> getMassWrappers() {
+                return massWrappers;
+            }
+
+            @Override
+            public double getEdgeCreationError() {
+                return 0.1;
+            }
+        };
         mdGraph = new MDGraph(mockMDPreprocessor);
     }
 
@@ -74,13 +79,14 @@ public class MDGraphTest {
         expectedIdList = new ArrayList<>();
         expectedIdList.add(new Pair<>(2, 3));
         expectedIdList.add(new Pair<>(2, 5));
+        expectedIdList.add(new Pair<>(3, 6));
         expectedIdList.add(new Pair<>(4, 5));
         expectedIdList.add(new Pair<>(5, 6));
         expectedIdMap.put(2, expectedIdList);
 
         mdGraph.createEdges();
         List<MassEdge> massEdges = mdGraph.getMassEdges();
-        Assert.assertEquals(6, massEdges.size());
+        Assert.assertEquals(7, massEdges.size());
         for (MassEdge massEdge : massEdges) {
             int idMassDifference = massEdge.getMassDifference().getId();
             if (expectedIdMap.containsKey(idMassDifference)) {
@@ -93,5 +99,28 @@ public class MDGraphTest {
                 Assert.fail();
             }
         }
+    }
+}
+
+class MockMDPreprocessor implements MDPreprocessorInterface {
+
+    @Override
+    public void runPreprocessing() {
+
+    }
+
+    @Override
+    public List<MassWrapper> getMassWrappers() {
+        return new ArrayList<>();
+    }
+
+    @Override
+    public Set<MassDifference> getMassDifferences() {
+        return new HashSet<>();
+    }
+
+    @Override
+    public double getEdgeCreationError() {
+        return 0;
     }
 }

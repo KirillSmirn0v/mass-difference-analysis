@@ -1,9 +1,9 @@
 package mdGraphElements;
 
-import abstracts.GraphSettingsInterface;
 import mdCoreElements.Element;
 import mdCoreElements.IonAdduct;
 import mdCoreElements.MDSettings;
+import mdCoreElements.MDSettingsInterface;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -12,27 +12,23 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class MDGraphSettings implements GraphSettingsInterface {
+public class MDGraphSettings implements MDGraphSettingsInterface {
     private static Pattern patternElementCounts = Pattern.compile("([A-Z][a-z]?)(\\d*)");
 
-    private MDSettings mdSettings;
+    private MDSettingsInterface mdSettings;
     private Set<MassDifference> massDifferences;
     private double edgeCreationError;
 
-    public MDGraphSettings(MDSettings mdSettings) {
-        this.mdSettings = new MDSettings(mdSettings);
+    public MDGraphSettings(MDSettingsInterface mdSettings) {
+        this.mdSettings = mdSettings.getCopy();
         this.massDifferences = new HashSet<>();
         setDefaults();
     }
 
-    public MDGraphSettings(MDGraphSettings mdGraphSettings) {
-        this.mdSettings = mdGraphSettings.getMDSettings();
-        Set<MassDifference> massDifferencesCopy = new HashSet<>();
-        for (MassDifference massDifference : mdGraphSettings.getMassDifferences()) {
-            MassDifference massDifferenceCopy = new MassDifference(massDifference);
-            massDifferencesCopy.add(massDifferenceCopy);
-        }
-        this.massDifferences = massDifferencesCopy;
+    private MDGraphSettings(MDSettingsInterface mdSettings, Set<MassDifference> massDifferences, double edgeCreationError) {
+        this.mdSettings = mdSettings;
+        this.massDifferences = massDifferences;
+        this.edgeCreationError = edgeCreationError;
     }
 
     @Override
@@ -102,27 +98,43 @@ public class MDGraphSettings implements GraphSettingsInterface {
         scanner.close();
     }
 
+    @Override
     public void setEdgeCreationError(double edgeCreationError) {
         this.edgeCreationError = edgeCreationError;
     }
 
+    @Override
     public Set<Element> getElements() {
         return mdSettings.getElements();
     }
 
+    @Override
     public Set<IonAdduct> getIonAdducts() {
         return mdSettings.getIonAdducts();
     }
 
-    public MDSettings getMDSettings() {
+    @Override
+    public MDSettingsInterface getMDSettings() {
         return mdSettings;
     }
 
+    @Override
     public Set<MassDifference> getMassDifferences() {
         return massDifferences;
     }
 
+    @Override
     public double getEdgeCreationError() {
         return edgeCreationError;
+    }
+
+    @Override
+    public MDGraphSettingsInterface getCopy() {
+        Set<MassDifference> massDifferencesCopy = new HashSet<>();
+        for (MassDifference massDifference : getMassDifferences()) {
+            MassDifference massDifferenceCopy = new MassDifference(massDifference);
+            massDifferencesCopy.add(massDifferenceCopy);
+        }
+        return new MDGraphSettings(getMDSettings(), massDifferencesCopy, getEdgeCreationError());
     }
 }

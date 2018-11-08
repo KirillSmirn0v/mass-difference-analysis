@@ -1,17 +1,20 @@
 package mdGraphContruction;
 
 import mdCoreData.ExpMass;
+import mdCoreElements.Element;
 import mdCoreElements.IonAdduct;
-import mdCoreElements.MDSettings;
+import mdCoreElements.MDSettingsInterface;
 import mdGraphConstruction.MDPreprocessor;
 import mdGraphConstruction.MassWrapper;
-import mdGraphElements.MDGraphSettings;
+import mdGraphElements.MDGraphSettingsInterface;
+import mdGraphElements.MassDifference;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -19,23 +22,25 @@ import java.util.Set;
 
 public class MDPreprocessorTest {
     private MDPreprocessor mdPreprocessor = null;
-    private MDGraphSettings mockMDGraphSettings = null;
+    private MDGraphSettingsInterface mockMDGraphSettings = null;
     private List<ExpMass> mockExpMasses = null;
 
     @Before
     public void before() {
-        MDSettings mockMDSettings = Mockito.mock(MDSettings.class);
-        Set<IonAdduct> ionAdducts = new HashSet<>();
-        ionAdducts.add(new IonAdduct("[M+55]", IonAdduct.IonSign.POSITIVE, 55.0));
-        ionAdducts.add(new IonAdduct("[M-33]+", IonAdduct.IonSign.POSITIVE, -33.0));
-        Mockito.when(mockMDSettings.getIonAdducts()).thenReturn(ionAdducts);
-
-        mockMDGraphSettings = new MDGraphSettings(mockMDSettings);
-
         mockExpMasses = new ArrayList<>();
         mockExpMasses.add(new ExpMass(10, 100 ));
         mockExpMasses.add(new ExpMass(20, 200));
         mockExpMasses.add(new ExpMass(30, 300));
+
+        Set<IonAdduct> ionAdducts = new HashSet<>();
+        ionAdducts.add(new IonAdduct("[M+55]", IonAdduct.IonSign.POSITIVE, 55.0));
+        ionAdducts.add(new IonAdduct("[M-33]+", IonAdduct.IonSign.POSITIVE, -33.0));
+        mockMDGraphSettings = new MockMDGraphSettings() {
+            @Override
+            public Set<IonAdduct> getIonAdducts() {
+                return ionAdducts;
+            }
+        };
 
         mdPreprocessor = new MDPreprocessor(mockExpMasses, mockMDGraphSettings);
     }
@@ -64,5 +69,53 @@ public class MDPreprocessorTest {
         for (int i = 0; i < massWrappers.size(); i++) {
             Assert.assertEquals(expectedValues.get(i), massWrappers.get(i).getMass(), 0.0);
         }
+    }
+}
+
+class MockMDGraphSettings implements MDGraphSettingsInterface {
+
+    @Override
+    public void setDefaults() {
+
+    }
+
+    @Override
+    public void readSettingsFromFile(File file) throws IOException {
+
+    }
+
+    @Override
+    public void setEdgeCreationError(double edgeCreationError) {
+
+    }
+
+    @Override
+    public Set<Element> getElements() {
+        return new HashSet<>();
+    }
+
+    @Override
+    public Set<IonAdduct> getIonAdducts() {
+        return new HashSet<>();
+    }
+
+    @Override
+    public Set<MassDifference> getMassDifferences() {
+        return new HashSet<>();
+    }
+
+    @Override
+    public double getEdgeCreationError() {
+        return 0;
+    }
+
+    @Override
+    public MDSettingsInterface getMDSettings() {
+        return null;
+    }
+
+    @Override
+    public MDGraphSettingsInterface getCopy() {
+        return this;
     }
 }

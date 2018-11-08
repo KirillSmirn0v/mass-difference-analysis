@@ -1,17 +1,19 @@
 package mdGraphElements;
 
 import mdCoreElements.Element;
-import mdCoreElements.MDSettings;
+import mdCoreElements.IonAdduct;
+import mdCoreElements.MDSettingsInterface;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
-import org.mockito.InjectMocks;
-import org.mockito.Mockito;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class MDGraphSettingsTest {
     private static final Path BASE_PATH = Paths.get("src/test/resources");
@@ -23,7 +25,7 @@ public class MDGraphSettingsTest {
     private Element nitrogen = new Element("N", 14.003074, 3);
 
     private MDGraphSettings mdGraphSettings = null;
-    private MDSettings mockMDSettings;
+    private MDSettingsInterface mockMDSettings;
 
     @Rule
     public ExpectedException expectedException = null;
@@ -31,13 +33,27 @@ public class MDGraphSettingsTest {
     @Before
     public void before() {
         expectedException = ExpectedException.none();
-        mockMDSettings = Mockito.mock(MDSettings.class);
         Set<Element> mockElements = new HashSet<>();
+        Map<String, Element> mockName2ElementMap = new HashMap<>();
         mockElements.add(carbon);
+        mockName2ElementMap.put("C", carbon);
         mockElements.add(hydrogen);
+        mockName2ElementMap.put("H", hydrogen);
         mockElements.add(oxygen);
+        mockName2ElementMap.put("O", oxygen);
         mockElements.add(nitrogen);
-        Mockito.when(mockMDSettings.getElements()).thenReturn(mockElements);
+        mockName2ElementMap.put("N", nitrogen);
+        mockMDSettings = new MockMDSettings() {
+            @Override
+            public Set<Element> getElements() {
+                return mockElements;
+            }
+
+            @Override
+            public Map<String, Element> getName2ElementMap() {
+                return mockName2ElementMap;
+            }
+        };
         mdGraphSettings = new MDGraphSettings(mockMDSettings);
     }
 
@@ -84,6 +100,10 @@ public class MDGraphSettingsTest {
             formula.put(hydrogen, 6);
             formula.put(oxygen, 1);
             expectedMassDifferences.add(new MassDifference(2, "C2H5OH", formula));
+            formula = new HashMap<>();
+            formula.put(nitrogen, 1);
+            formula.put(hydrogen, 3);
+            expectedMassDifferences.add(new MassDifference(3, "NH3", formula));
 
             mdGraphSettings.readSettingsFromFile(TEST_MASSDIFFERENCES_OK);
             Set<MassDifference> massDifferences = mdGraphSettings.getMassDifferences();
@@ -92,5 +112,38 @@ public class MDGraphSettingsTest {
         } catch (IOException e) {
             Assert.fail();
         }
+    }
+}
+
+class MockMDSettings implements MDSettingsInterface {
+
+    @Override
+    public void setDefaults() {
+
+    }
+
+    @Override
+    public void readSettingsFromFile(File file) throws IOException {
+
+    }
+
+    @Override
+    public Set<Element> getElements() {
+        return new HashSet<>();
+    }
+
+    @Override
+    public Map<String, Element> getName2ElementMap() {
+        return new HashMap<>();
+    }
+
+    @Override
+    public Set<IonAdduct> getIonAdducts() {
+        return new HashSet<>();
+    }
+
+    @Override
+    public MDSettingsInterface getCopy() {
+        return this;
     }
 }

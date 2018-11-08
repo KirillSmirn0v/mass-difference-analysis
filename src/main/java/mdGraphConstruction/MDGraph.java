@@ -6,19 +6,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class MDGraph {
-    private MDPreprocessor mdPreprocessor;
+public class MDGraph implements MDGraphInterface {
+    private MDPreprocessorInterface mdPreprocessor;
     private double edgeCreationError;
     private List<MassWrapper> massWrappers;
     private List<MassEdge> massEdges;
 
-    public MDGraph(MDPreprocessor mdPreprocessor) {
+    public MDGraph(MDPreprocessorInterface mdPreprocessor) {
         this.mdPreprocessor = mdPreprocessor;
         this.edgeCreationError = mdPreprocessor.getEdgeCreationError();
         this.massWrappers = mdPreprocessor.getMassWrappers();
         this.massEdges = new ArrayList<>();
     }
 
+    @Override
     public void createEdges() {
         Set<MassDifference> massDifferences = mdPreprocessor.getMassDifferences();
         List<MassWrapper> massWrappers = mdPreprocessor.getMassWrappers();
@@ -30,16 +31,19 @@ public class MDGraph {
                     MassWrapper target = massWrappers.get(j);
                     if (validSourceAndTarget(source, target, massDifference)) {
                         MassEdge massEdge = new MassEdge(source, target, massDifference);
+                        massEdges.add(massEdge);
                     }
                 }
             }
         }
     }
 
+    @Override
     public List<MassWrapper> getMassWrappers() {
         return massWrappers;
     }
 
+    @Override
     public List<MassEdge> getMassEdges() {
         return massEdges;
     }
