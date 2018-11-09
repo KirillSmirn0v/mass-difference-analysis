@@ -3,6 +3,7 @@ package mdGraphConstruction;
 import mdGraphElements.MassDifference;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -43,7 +44,7 @@ public class MDGraph implements MDGraphInterface {
 
     @Override
     public List<MassEdge> getMassEdges() {
-        return massEdges;
+        return Collections.unmodifiableList(massEdges);
     }
 
     private boolean validSourceAndTarget(MassWrapper source, MassWrapper target, MassDifference massDifference) {
