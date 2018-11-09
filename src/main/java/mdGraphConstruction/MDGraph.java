@@ -13,7 +13,7 @@ public class MDGraph implements MDGraphInterface {
     private List<MassEdge> massEdges;
 
     public MDGraph(MDPreprocessorInterface mdPreprocessor) {
-        this.mdPreprocessor = mdPreprocessor;
+        this.mdPreprocessor = mdPreprocessor.getCopy();
         this.edgeCreationError = mdPreprocessor.getEdgeCreationError();
         this.massWrappers = mdPreprocessor.getMassWrappers();
         this.massEdges = new ArrayList<>();
