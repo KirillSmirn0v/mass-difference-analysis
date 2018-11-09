@@ -10,5 +10,4 @@ public interface MDPreprocessorInterface {
     List<MassWrapper> getMassWrappers();
     Set<MassDifference> getMassDifferences();
     double getEdgeCreationError();
-    MDPreprocessorInterface getCopy();
 }

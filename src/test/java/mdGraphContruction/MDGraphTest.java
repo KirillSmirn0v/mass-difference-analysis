@@ -123,9 +123,4 @@ class MockMDPreprocessor implements MDPreprocessorInterface {
     public double getEdgeCreationError() {
         return 0;
     }
-
-    @Override
-    public MDPreprocessorInterface getCopy() {
-        return this;
-    }
 }

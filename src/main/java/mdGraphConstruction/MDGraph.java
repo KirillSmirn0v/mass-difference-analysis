@@ -9,13 +9,11 @@ import java.util.Set;
 public class MDGraph implements MDGraphInterface {
     private MDPreprocessorInterface mdPreprocessor;
     private double edgeCreationError;
-    private List<MassWrapper> massWrappers;
     private List<MassEdge> massEdges;
 
     public MDGraph(MDPreprocessorInterface mdPreprocessor) {
-        this.mdPreprocessor = mdPreprocessor.getCopy();
+        this.mdPreprocessor = mdPreprocessor;
         this.edgeCreationError = mdPreprocessor.getEdgeCreationError();
-        this.massWrappers = mdPreprocessor.getMassWrappers();
         this.massEdges = new ArrayList<>();
     }
 
@@ -40,7 +38,7 @@ public class MDGraph implements MDGraphInterface {
 
     @Override
     public List<MassWrapper> getMassWrappers() {
-        return massWrappers;
+        return mdPreprocessor.getMassWrappers();
     }
 
     @Override

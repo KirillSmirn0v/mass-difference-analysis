@@ -9,11 +9,6 @@ public class ExpMass {
         this.mass = mass;
     }
 
-    public ExpMass(ExpMass expMass) {
-        this.id = expMass.getId();
-        this.mass = expMass.getMass();
-    }
-
     public int getId() {
         return id;
     }

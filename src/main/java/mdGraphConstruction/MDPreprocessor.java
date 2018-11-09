@@ -7,6 +7,7 @@ import mdGraphElements.MDGraphSettingsInterface;
 import mdGraphElements.MassDifference;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -18,12 +19,6 @@ public class MDPreprocessor implements MDPreprocessorInterface {
     public MDPreprocessor(List<ExpMass> expMasses, MDGraphSettingsInterface mdGraphSettings) {
         this.expMasses = expMasses;
         this.mdGraphSettings = mdGraphSettings.getCopy();
-    }
-
-    public MDPreprocessor(List<ExpMass> expMasses, MDGraphSettingsInterface mdGraphSettings, List<MassWrapper> massWrappers) {
-        this.expMasses = expMasses;
-        this.mdGraphSettings = mdGraphSettings;
-        this.massWrappers = massWrappers;
     }
 
     @Override
@@ -47,33 +42,16 @@ public class MDPreprocessor implements MDPreprocessorInterface {
 
     @Override
     public List<MassWrapper> getMassWrappers() {
-        return massWrappers;
+        return Collections.unmodifiableList(massWrappers);
     }
 
     @Override
     public Set<MassDifference> getMassDifferences() {
-        return mdGraphSettings.getMassDifferences();
+        return Collections.unmodifiableSet(mdGraphSettings.getMassDifferences());
     }
 
     @Override
     public double getEdgeCreationError() {
         return mdGraphSettings.getEdgeCreationError();
-    }
-
-    @Override
-    public MDPreprocessorInterface getCopy() {
-        List<ExpMass> expMassesCopy = new ArrayList<>();
-        for (ExpMass expMass : expMasses) {
-            expMassesCopy.add(new ExpMass(expMass));
-        }
-        List<MassWrapper> massWrappersCopy = new ArrayList<>();
-        for (MassWrapper massWrapper : massWrappers) {
-            massWrappersCopy.add(new MassWrapper(massWrapper));
-        }
-        return new MDPreprocessor(expMassesCopy, getMdGraphSettings(), massWrappersCopy);
-    }
-
-    private MDGraphSettingsInterface getMdGraphSettings() {
-        return mdGraphSettings;
     }
 }
