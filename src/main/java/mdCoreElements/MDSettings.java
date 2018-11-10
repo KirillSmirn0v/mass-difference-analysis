@@ -14,11 +14,13 @@ public class MDSettings implements MDSettingsInterface {
     private Set<Element> elements;
     private Map<String, Element> name2ElementMap;
     private Set<IonAdduct> ionAdducts;
+    private Map<String, IonAdduct> name2IonAdductMap;
 
     public MDSettings() {
         elements = new HashSet<>();
         name2ElementMap = new HashMap<>();
         ionAdducts = new HashSet<>();
+        name2IonAdductMap = new HashMap<>();
         setDefaults();
     }
 
@@ -46,8 +48,13 @@ public class MDSettings implements MDSettingsInterface {
         elements.add(nitrogen);
         name2ElementMap.put("N", nitrogen);
 
-        ionAdducts.add(new IonAdduct("[M+H]+", IonAdduct.IonSign.POSITIVE, 1.007276));
-        ionAdducts.add(new IonAdduct("[M+Na]+", IonAdduct.IonSign.POSITIVE, 34.989221));
+        IonAdduct hydrogenation = new IonAdduct("[M+H]+", IonAdduct.IonSign.POSITIVE, 1.007276);
+        ionAdducts.add(hydrogenation);
+        name2IonAdductMap.put("[M+H]+", hydrogenation);
+
+        IonAdduct sodiation = new IonAdduct("[M+Na]+", IonAdduct.IonSign.POSITIVE, 34.989221);
+        ionAdducts.add(sodiation);
+        name2IonAdductMap.put("[M+Na]+", sodiation);
     }
 
     @Override
@@ -71,6 +78,11 @@ public class MDSettings implements MDSettingsInterface {
     @Override
     public Set<IonAdduct> getIonAdducts() {
         return ionAdducts;
+    }
+
+    @Override
+    public Map<String, IonAdduct> getName2IonAdductMap() {
+        return name2IonAdductMap;
     }
 
     @Override
