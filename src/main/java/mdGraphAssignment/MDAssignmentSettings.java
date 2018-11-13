@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
 
 public class MDAssignmentSettings implements MDAssignmentSettingsInterface {
     private static Pattern patternRefMasses = Pattern.compile("reference:\\s+([A-Za-z0-9]+)\\s+(\\d+\\.?\\d*)\\s+(\\S+)");
-    private static Pattern patternElements = Pattern.compile("([A-Z][a-z])?(\\d*)");
+    private static Pattern patternElements = Pattern.compile("([A-Z][a-z]?)(\\d*)");
     private static Pattern patternParameters = Pattern.compile("([a-z\\s]+):\\s+(\\d+\\.?\\d*)");
 
     private MDSettingsInterface mdSettings;
@@ -50,7 +50,7 @@ public class MDAssignmentSettings implements MDAssignmentSettingsInterface {
         Map<String, Element> name2ElementMap = mdSettings.getName2ElementMap();
         Map<String, IonAdduct> name2IonAdductMap = mdSettings.getName2IonAdductMap();
         while (scanner.hasNextLine()) {
-            String line = scanner.next();
+            String line = scanner.nextLine();
             Matcher matcherRefMasses = patternRefMasses.matcher(line);
             Matcher matcherParameters = patternParameters.matcher(line);
             if (matcherRefMasses.matches()) {
@@ -114,22 +114,27 @@ public class MDAssignmentSettings implements MDAssignmentSettingsInterface {
 
     }
 
+    @Override
     public List<RefMass> getRefMasses() {
         return refMasses;
     }
 
+    @Override
     public double getMaxAssignmentError() {
         return maxAssignmentError;
     }
 
+    @Override
     public double getMaxDiffError() {
         return maxDiffError;
     }
 
+    @Override
     public int getMaxEdgeInconsistencies() {
         return maxEdgeInconsistencies;
     }
 
+    @Override
     public int getMaxSameIterations() {
         return maxSameIterations;
     }
