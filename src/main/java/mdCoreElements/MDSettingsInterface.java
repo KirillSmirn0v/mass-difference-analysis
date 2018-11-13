@@ -12,5 +12,4 @@ public interface MDSettingsInterface {
     Map<String, Element> getName2ElementMap();
     Set<IonAdduct> getIonAdducts();
     Map<String, IonAdduct> getName2IonAdductMap();
-    MDSettingsInterface getCopy();
 }

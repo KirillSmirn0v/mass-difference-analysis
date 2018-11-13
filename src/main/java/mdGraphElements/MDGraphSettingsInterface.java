@@ -20,6 +20,5 @@ public interface MDGraphSettingsInterface {
     Set<MassDifference> getMassDifferences();
     double getEdgeCreationError();
     MDSettingsInterface getMDSettings();
-    MDGraphSettingsInterface getCopy();
 
 }

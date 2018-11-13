@@ -143,7 +143,7 @@ class MockMDSettings implements MDSettingsInterface {
     }
 
     @Override
-    public MDSettingsInterface getCopy() {
-        return this;
+    public Map<String, IonAdduct> getName2IonAdductMap() {
+        return new HashMap<>();
     }
 }

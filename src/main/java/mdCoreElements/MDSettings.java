@@ -24,12 +24,6 @@ public class MDSettings implements MDSettingsInterface {
         setDefaults();
     }
 
-    private MDSettings(Set<Element> elements, Map<String, Element> name2ElementMap, Set<IonAdduct> ionAdducts) {
-        this.elements = elements;
-        this.name2ElementMap = name2ElementMap;
-        this.ionAdducts = ionAdducts;
-    }
-
     @Override
     public void setDefaults() {
         Element carbon = new Element("C", 12.000000, 4);
@@ -83,23 +77,6 @@ public class MDSettings implements MDSettingsInterface {
     @Override
     public Map<String, IonAdduct> getName2IonAdductMap() {
         return name2IonAdductMap;
-    }
-
-    @Override
-    public MDSettingsInterface getCopy() {
-        Set<Element> elementsCopy = new HashSet<>();
-        Map<String, Element> name2ElementMapCopy = new HashMap<>();
-        Set<IonAdduct> ionAdductsCopy = new HashSet<>();
-        for (Element element : getElements()) {
-            Element elementCopy = new Element(element);
-            elementsCopy.add(elementCopy);
-            name2ElementMapCopy.put(elementCopy.getName(), elementCopy);
-        }
-        for (IonAdduct ionAdduct : getIonAdducts()) {
-            IonAdduct ionAdductCopy = new IonAdduct(ionAdduct);
-            ionAdductsCopy.add(ionAdductCopy);
-        }
-        return new MDSettings(elementsCopy, name2ElementMapCopy, ionAdductsCopy);
     }
 
     private void readElementsAndIonAdducts(Scanner scanner) {

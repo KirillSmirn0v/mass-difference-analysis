@@ -18,7 +18,7 @@ public class MDPreprocessor implements MDPreprocessorInterface {
 
     public MDPreprocessor(List<ExpMass> expMasses, MDGraphSettingsInterface mdGraphSettings) {
         this.expMasses = expMasses;
-        this.mdGraphSettings = mdGraphSettings.getCopy();
+        this.mdGraphSettings = mdGraphSettings;
     }
 
     @Override

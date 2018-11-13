@@ -113,9 +113,4 @@ class MockMDGraphSettings implements MDGraphSettingsInterface {
     public MDSettingsInterface getMDSettings() {
         return null;
     }
-
-    @Override
-    public MDGraphSettingsInterface getCopy() {
-        return this;
-    }
 }

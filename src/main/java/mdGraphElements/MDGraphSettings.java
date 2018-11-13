@@ -20,15 +20,9 @@ public class MDGraphSettings implements MDGraphSettingsInterface {
     private double edgeCreationError;
 
     public MDGraphSettings(MDSettingsInterface mdSettings) {
-        this.mdSettings = mdSettings.getCopy();
+        this.mdSettings = mdSettings;
         this.massDifferences = new HashSet<>();
         setDefaults();
-    }
-
-    private MDGraphSettings(MDSettingsInterface mdSettings, Set<MassDifference> massDifferences, double edgeCreationError) {
-        this.mdSettings = mdSettings;
-        this.massDifferences = massDifferences;
-        this.edgeCreationError = edgeCreationError;
     }
 
     @Override
@@ -126,15 +120,5 @@ public class MDGraphSettings implements MDGraphSettingsInterface {
     @Override
     public double getEdgeCreationError() {
         return edgeCreationError;
-    }
-
-    @Override
-    public MDGraphSettingsInterface getCopy() {
-        Set<MassDifference> massDifferencesCopy = new HashSet<>();
-        for (MassDifference massDifference : getMassDifferences()) {
-            MassDifference massDifferenceCopy = new MassDifference(massDifference);
-            massDifferencesCopy.add(massDifferenceCopy);
-        }
-        return new MDGraphSettings(getMDSettings(), massDifferencesCopy, getEdgeCreationError());
     }
 }
