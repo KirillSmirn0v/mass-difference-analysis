@@ -16,8 +16,7 @@ public class MDAssignmentSettings implements MDAssignmentSettingsInterface {
     private static Pattern patternElements = Pattern.compile("([A-Z][a-z])?(\\d*)");
     private static Pattern patternParameters = Pattern.compile("([a-z\\s]+):\\s+(\\d+\\.?\\d*)");
 
-    private Map<String, Element> name2ElementMap;
-    private Map<String, IonAdduct> name2IonAdductMap;
+    private MDSettingsInterface mdSettings;
     private List<RefMass> refMasses;
     private double maxAssignmentError;
     private double maxDiffError;
@@ -25,8 +24,7 @@ public class MDAssignmentSettings implements MDAssignmentSettingsInterface {
     private int maxSameIterations;
 
     public MDAssignmentSettings(MDSettingsInterface mdSettings) {
-        this.name2ElementMap = mdSettings.getName2ElementMap();
-        this.name2IonAdductMap = mdSettings.getName2IonAdductMap();
+        this.mdSettings = mdSettings;
         setDefaults();
     }
 
@@ -49,6 +47,8 @@ public class MDAssignmentSettings implements MDAssignmentSettingsInterface {
 
     private void readSettings(Scanner scanner) {
         refMasses = new ArrayList<>();
+        Map<String, Element> name2ElementMap = mdSettings.getName2ElementMap();
+        Map<String, IonAdduct> name2IonAdductMap = mdSettings.getName2IonAdductMap();
         while (scanner.hasNextLine()) {
             String line = scanner.next();
             Matcher matcherRefMasses = patternRefMasses.matcher(line);
@@ -57,7 +57,7 @@ public class MDAssignmentSettings implements MDAssignmentSettingsInterface {
                 String formulaName = matcherRefMasses.group(1);
                 String formulaMass = matcherRefMasses.group(2);
                 String formulaAdduct = matcherRefMasses.group(3);
-                readFormula(formulaName, formulaMass, formulaAdduct);
+                readFormula(formulaName, formulaMass, formulaAdduct, name2ElementMap, name2IonAdductMap);
             } else if (matcherParameters.matches()) {
                 String parName = matcherParameters.group(1);
                 String parValue = matcherParameters.group(2);
@@ -67,7 +67,7 @@ public class MDAssignmentSettings implements MDAssignmentSettingsInterface {
         scanner.close();
     }
 
-    private void readFormula(String formulaName, String formulaMass, String formulaAdduct) {
+    private void readFormula(String formulaName, String formulaMass, String formulaAdduct, Map<String, Element> name2ElementMap, Map<String, IonAdduct> name2IonAdductMap) {
         Matcher matcherElements = patternElements.matcher(formulaName);
         Map<Element, Integer> refFormula = new HashMap<>();
         while (matcherElements.find()) {

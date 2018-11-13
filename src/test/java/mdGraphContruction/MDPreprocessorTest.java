@@ -8,6 +8,7 @@ import mdGraphConstruction.MDPreprocessor;
 import mdGraphConstruction.MassWrapper;
 import mdGraphElements.MDGraphSettingsInterface;
 import mdGraphElements.MassDifference;
+import mdGraphElements.MockMDGraphSettings;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -69,48 +70,5 @@ public class MDPreprocessorTest {
         for (int i = 0; i < massWrappers.size(); i++) {
             Assert.assertEquals(expectedValues.get(i), massWrappers.get(i).getMass(), 0.0);
         }
-    }
-}
-
-class MockMDGraphSettings implements MDGraphSettingsInterface {
-
-    @Override
-    public void setDefaults() {
-
-    }
-
-    @Override
-    public void readSettingsFromFile(File file) throws IOException {
-
-    }
-
-    @Override
-    public void setEdgeCreationError(double edgeCreationError) {
-
-    }
-
-    @Override
-    public Set<Element> getElements() {
-        return new HashSet<>();
-    }
-
-    @Override
-    public Set<IonAdduct> getIonAdducts() {
-        return new HashSet<>();
-    }
-
-    @Override
-    public Set<MassDifference> getMassDifferences() {
-        return new HashSet<>();
-    }
-
-    @Override
-    public double getEdgeCreationError() {
-        return 0;
-    }
-
-    @Override
-    public MDSettingsInterface getMDSettings() {
-        return null;
     }
 }

@@ -101,26 +101,3 @@ public class MDGraphTest {
         }
     }
 }
-
-class MockMDPreprocessor implements MDPreprocessorInterface {
-
-    @Override
-    public void runPreprocessing() {
-
-    }
-
-    @Override
-    public List<MassWrapper> getMassWrappers() {
-        return new ArrayList<>();
-    }
-
-    @Override
-    public Set<MassDifference> getMassDifferences() {
-        return new HashSet<>();
-    }
-
-    @Override
-    public double getEdgeCreationError() {
-        return 0;
-    }
-}

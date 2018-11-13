@@ -1,8 +1,8 @@
 package mdGraphElements;
 
 import mdCoreElements.Element;
-import mdCoreElements.IonAdduct;
 import mdCoreElements.MDSettingsInterface;
+import mdCoreElements.MockMDSettings;
 import org.junit.*;
 import org.junit.rules.ExpectedException;
 
@@ -112,38 +112,5 @@ public class MDGraphSettingsTest {
         } catch (IOException e) {
             Assert.fail();
         }
-    }
-}
-
-class MockMDSettings implements MDSettingsInterface {
-
-    @Override
-    public void setDefaults() {
-
-    }
-
-    @Override
-    public void readSettingsFromFile(File file) throws IOException {
-
-    }
-
-    @Override
-    public Set<Element> getElements() {
-        return new HashSet<>();
-    }
-
-    @Override
-    public Map<String, Element> getName2ElementMap() {
-        return new HashMap<>();
-    }
-
-    @Override
-    public Set<IonAdduct> getIonAdducts() {
-        return new HashSet<>();
-    }
-
-    @Override
-    public Map<String, IonAdduct> getName2IonAdductMap() {
-        return new HashMap<>();
     }
 }
