@@ -7,6 +7,7 @@ import java.util.List;
 public interface MDAssignmentSettingsInterface {
     void readSettingsFromFile(File file) throws IOException;
     List<RefMass> getRefMasses();
+    double getRefError();
     double getMaxAssignmentError();
     double getMaxDiffError();
     int getMaxEdgeInconsistencies();

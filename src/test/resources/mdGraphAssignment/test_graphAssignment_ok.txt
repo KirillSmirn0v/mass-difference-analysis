@@ -3,6 +3,7 @@ reference:  CCO2CH  100     [Two]
 reference:  CH5N    150.0   [One]
 reference:  CH2     200.0   [Three]
 
+reference error: 0.1
 max assignment error: 0.1
 max difference error: 0.2
 max edge inconsistencies: 3

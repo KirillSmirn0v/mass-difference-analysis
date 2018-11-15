@@ -67,6 +67,7 @@ public class MDAssignmentSettingsTest {
         try {
             mdAssignmentSettings.readSettingsFromFile(TEST_GRAPHASSIGNMENT_OK);
             List<RefMass> refMasses = mdAssignmentSettings.getRefMasses();
+            double refError = mdAssignmentSettings.getRefError();
             double maxAssignentError = mdAssignmentSettings.getMaxAssignmentError();
             double maxDiffError = mdAssignmentSettings.getMaxDiffError();
             int maxEdgeInconsistencies = mdAssignmentSettings.getMaxEdgeInconsistencies();
@@ -99,6 +100,7 @@ public class MDAssignmentSettingsTest {
                 Assert.assertEquals(expectedMasses.get(i), refMasses.get(i).getMass(), 0.0);
                 Assert.assertEquals(expectedIonAdducts.get(i), refMasses.get(i).getIonAdduct());
             }
+            Assert.assertEquals(0.1, refError, 0.0);
             Assert.assertEquals(0.1, maxAssignentError, 0.0);
             Assert.assertEquals(0.2, maxDiffError, 0.0);
             Assert.assertEquals(3, maxEdgeInconsistencies);

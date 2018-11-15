@@ -18,6 +18,7 @@ public class MDAssignmentSettings implements MDAssignmentSettingsInterface {
 
     private MDSettingsInterface mdSettings;
     private List<RefMass> refMasses;
+    private double refError;
     private double maxAssignmentError;
     private double maxDiffError;
     private int maxEdgeInconsistencies;
@@ -30,6 +31,7 @@ public class MDAssignmentSettings implements MDAssignmentSettingsInterface {
 
     private void setDefaults() {
         refMasses = new ArrayList<>();
+        refError = 0.1;
         maxAssignmentError = 5.0;
         maxDiffError = 0.3;
         maxEdgeInconsistencies = 5;
@@ -96,6 +98,8 @@ public class MDAssignmentSettings implements MDAssignmentSettingsInterface {
 
     private void readParameter(String parName, String parValue) {
         switch (parName) {
+            case "reference error":
+                refError = Double.parseDouble(parValue);
             case "max assignment error":
                 maxAssignmentError = Double.parseDouble(parValue);
                 break;
@@ -117,6 +121,11 @@ public class MDAssignmentSettings implements MDAssignmentSettingsInterface {
     @Override
     public List<RefMass> getRefMasses() {
         return refMasses;
+    }
+
+    @Override
+    public double getRefError() {
+        return refError;
     }
 
     @Override
