@@ -12,8 +12,8 @@ public class RefMass {
 
     public RefMass(Map<Element, Integer> formula, double mass, IonAdduct ionAdduct) {
         this.formula = formula;
-        this.mass = mass;
         this.ionAdduct = ionAdduct;
+        this.mass = mass - ionAdduct.getMass();
     }
 
     public Map<Element, Integer> getFormula() {
