@@ -87,8 +87,8 @@ public class MDAssignmentSettingsTest {
             expectedFormulas.add(formula);
 
             List<Double> expectedMasses = new ArrayList<>();
-            expectedMasses.add(50.2);
-            expectedMasses.add(99.7);
+            expectedMasses.add(49.8);
+            expectedMasses.add(100.3);
 
             List<IonAdduct> expectedIonAdducts = new ArrayList<>();
             expectedIonAdducts.add(adduct1);

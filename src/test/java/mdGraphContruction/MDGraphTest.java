@@ -73,15 +73,15 @@ public class MDGraphTest {
         Map<Integer, List<Pair<Integer, Integer>>> expectedIdMap = new HashMap<>();
         List<Pair<Integer, Integer>> expectedIdList;
         expectedIdList = new ArrayList<>();
-        expectedIdList.add(new Pair<>(1, 2));
-        expectedIdList.add(new Pair<>(1, 4));
+        expectedIdList.add(new Pair<>(0, 1));
+        expectedIdList.add(new Pair<>(0, 3));
         expectedIdMap.put(1, expectedIdList);
         expectedIdList = new ArrayList<>();
-        expectedIdList.add(new Pair<>(2, 3));
+        expectedIdList.add(new Pair<>(1, 2));
+        expectedIdList.add(new Pair<>(1, 4));
         expectedIdList.add(new Pair<>(2, 5));
-        expectedIdList.add(new Pair<>(3, 6));
+        expectedIdList.add(new Pair<>(3, 4));
         expectedIdList.add(new Pair<>(4, 5));
-        expectedIdList.add(new Pair<>(5, 6));
         expectedIdMap.put(2, expectedIdList);
 
         mdGraph.createEdges();
@@ -91,8 +91,8 @@ public class MDGraphTest {
             int idMassDifference = massEdge.getMassDifference().getId();
             if (expectedIdMap.containsKey(idMassDifference)) {
                 List<Pair<Integer, Integer>> expectedPairs = expectedIdMap.get(idMassDifference);
-                int idSource = massEdge.getSource().getExpMass().getId();
-                int idTarget = massEdge.getTarget().getExpMass().getId();
+                int idSource = massEdge.getSource();
+                int idTarget = massEdge.getTarget();
                 Pair<Integer, Integer> pair = new Pair<>(idSource, idTarget);
                 Assert.assertTrue(expectedPairs.contains(pair));
             } else {

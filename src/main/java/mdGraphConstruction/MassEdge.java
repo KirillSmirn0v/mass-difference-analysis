@@ -3,21 +3,21 @@ package mdGraphConstruction;
 import mdGraphElements.MassDifference;
 
 public class MassEdge {
-    private MassWrapper source;
-    private MassWrapper target;
+    private Integer source;
+    private Integer target;
     private MassDifference massDifference;
 
-    public MassEdge(MassWrapper source, MassWrapper target, MassDifference massDifference) {
+    public MassEdge(Integer source, Integer target, MassDifference massDifference) {
         this.source = source;
         this.target = target;
         this.massDifference = massDifference;
     }
 
-    public MassWrapper getSource() {
+    public Integer getSource() {
         return source;
     }
 
-    public MassWrapper getTarget() {
+    public Integer getTarget() {
         return target;
     }
 

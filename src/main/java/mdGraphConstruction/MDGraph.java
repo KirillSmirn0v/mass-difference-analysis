@@ -29,7 +29,7 @@ public class MDGraph implements MDGraphInterface {
                 for (int j = i+1; j < massWrappers.size(); j++) {
                     MassWrapper target = massWrappers.get(j);
                     if (validSourceAndTarget(source, target, massDifference)) {
-                        MassEdge massEdge = new MassEdge(source, target, massDifference);
+                        MassEdge massEdge = new MassEdge(i, j, massDifference);
                         massEdges.add(massEdge);
                     }
                 }
