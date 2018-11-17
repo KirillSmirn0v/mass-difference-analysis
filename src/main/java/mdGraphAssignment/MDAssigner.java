@@ -15,6 +15,8 @@ public class MDAssigner {
     private MDAssignmentSettingsInterface mdAssignmentSettings;
     private List<MassAssigned> massAssignedList;
     private Map<MassEdge, Integer> edgeFailuresMap = new HashMap<>();
+    private int countStableIterations;
+    private boolean isStable = true;
 
     public MDAssigner(MDGraphInterface mdGraph, MDAssignmentSettingsInterface mdAssignmentSettings) {
         this.mdGraph = mdGraph;
@@ -27,17 +29,23 @@ public class MDAssigner {
         List<MassEdge> massEdges = mdGraph.getMassEdges();
         initEdgeFailuresMap(massEdges);
 
-        boolean isAlgorithmFinished = false;
-        while (!isAlgorithmFinished) {
+        while (countStableIterations < mdAssignmentSettings.getMaxSameIterations()) {
             Collections.shuffle(massEdges);
             for (MassEdge massEdge : massEdges) {
-                MassAssigned source = massAssignedList.get(massEdge.getSource());
-                MassAssigned target = massAssignedList.get(massEdge.getTarget());
-                MassDifference massDifference = massEdge.getMassDifference();
-                boolean isSourceTargetEdgeTrustful = assumeSourceTargetAssignment(source, target, massDifference);
-                boolean isTargetSourceEdgeTrustful = assumeTargetSourceAssignment(source, target, massDifference);
-                if (!isSourceTargetEdgeTrustful || !isTargetSourceEdgeTrustful) {
-                    edgeFailuresMap.put(massEdge, edgeFailuresMap.get(massEdge) + 1);
+                if (edgeFailuresMap.get(massEdge) < mdAssignmentSettings.getMaxEdgeInconsistencies()) {
+                    MassAssigned source = massAssignedList.get(massEdge.getSource());
+                    MassAssigned target = massAssignedList.get(massEdge.getTarget());
+                    MassDifference massDifference = massEdge.getMassDifference();
+                    boolean isSourceTargetEdgeTrustful = assumeSourceTargetAssignment(source, target, massDifference);
+                    boolean isTargetSourceEdgeTrustful = assumeTargetSourceAssignment(source, target, massDifference);
+                    if (!isSourceTargetEdgeTrustful || !isTargetSourceEdgeTrustful) {
+                        edgeFailuresMap.put(massEdge, edgeFailuresMap.get(massEdge) + 1);
+                    }
+                    if (isStable) {
+                        countStableIterations++;
+                    } else {
+                        countStableIterations = 0;
+                    }
                 }
             }
         }
@@ -68,6 +76,7 @@ public class MDAssigner {
 
     private boolean assumeSourceTargetAssignment(MassAssigned source, MassAssigned target, MassDifference massDifference) {
         if (!source.isAssigned() && target.isAssigned()) {
+            isStable = false;
             double massSource = source.getMassWrapper().getMass();
             double massSourceAssumed = source.getMass();
 
@@ -101,12 +110,15 @@ public class MDAssigner {
                     return false;
                 }
             }
+        } else {
+            isStable = true;
         }
         return true;
     }
 
     private boolean assumeTargetSourceAssignment(MassAssigned source, MassAssigned target, MassDifference massDifference) {
         if (source.isAssigned() && !target.isAssigned()) {
+            isStable = false;
             Map<Element, Integer> formulaSourceAssumed = MDUtils.subtractSecondFormulaFromFirst(target.getFormula(), massDifference.getFormula());
             double massSource = source.getMassWrapper().getMass();
             double massSourceAssumed = MDUtils.getMassFromFormula(formulaSourceAssumed);
@@ -140,6 +152,8 @@ public class MDAssigner {
                     return false;
                 }
             }
+        } else {
+            isStable = true;
         }
         return true;
     }
