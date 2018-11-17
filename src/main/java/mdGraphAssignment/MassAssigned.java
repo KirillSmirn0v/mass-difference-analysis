@@ -2,9 +2,11 @@ package mdGraphAssignment;
 
 import mdCoreElements.Element;
 import mdGraphConstruction.MassWrapper;
+import utils.MDUtils;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class MassAssigned {
     private MassWrapper massWrapper;
@@ -23,6 +25,11 @@ public class MassAssigned {
 
     public void setAssigned(boolean isAssigned) {
         this.isAssigned = isAssigned;
+    }
+
+    public void setFormula(Map<Element, Integer> formula) {
+        this.formula = formula;
+        this.mass = MDUtils.getMassFromFormula(formula);
     }
 
     public MassWrapper getMassWrapper() {
