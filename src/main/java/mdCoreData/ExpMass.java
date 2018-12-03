@@ -24,11 +24,17 @@ public class ExpMass {
 
         ExpMass expMass = (ExpMass) o;
 
-        return id == expMass.id;
+        if (id != expMass.id) return false;
+        return Double.compare(expMass.mass, mass) == 0;
     }
 
     @Override
     public int hashCode() {
-        return id;
+        int result;
+        long temp;
+        result = id;
+        temp = Double.doubleToLongBits(mass);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        return result;
     }
 }

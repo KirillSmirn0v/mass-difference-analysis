@@ -18,21 +18,21 @@ public class MDSettingsTest {
     private static final File TEST_CORESETTINGS_DUPLICATES = BASE_PATH.resolve("mdCoreElements/test_coreSettings_duplicates.txt").toFile();
 
     private MDSettings mdSettings = null;
-    private Set<Element> mockElements = null;
-    private Set<IonAdduct> mockIonAdducts = null;
+    private Set<Element> expectedElements = null;
+    private Set<IonAdduct> expectedIonAdducts = null;
 
     @Before
     public void before() {
         mdSettings = new MDSettings();
-        mockElements = MDTestPool.getInstance().getElementPool("C", "H", "O");
-        mockIonAdducts = MDTestPool.getInstance().getIonAdductPool("[M-H]-", "[M+Na]+");
+        expectedElements = MDTestPool.getInstance().getElementPool("C", "H", "O");
+        expectedIonAdducts = MDTestPool.getInstance().getIonAdductPool("[M-H]-", "[M+Na]+");
     }
 
     @After
     public void after() {
         mdSettings = null;
-        mockElements = null;
-        mockIonAdducts = null;
+        expectedElements = null;
+        expectedIonAdducts = null;
     }
 
     @Test
@@ -63,9 +63,9 @@ public class MDSettingsTest {
     }
 
     private void assertSetEquality() {
-        Assert.assertEquals(mockElements.size(), mdSettings.getElements().size());
-        Assert.assertEquals(mockIonAdducts.size(), mdSettings.getIonAdducts().size());
-        Assert.assertTrue(mdSettings.getElements().containsAll(mockElements));
-        Assert.assertTrue(mdSettings.getIonAdducts().containsAll(mockIonAdducts));
+        Assert.assertEquals(expectedElements.size(), mdSettings.getElements().size());
+        Assert.assertEquals(expectedIonAdducts.size(), mdSettings.getIonAdducts().size());
+        Assert.assertTrue(mdSettings.getElements().containsAll(expectedElements));
+        Assert.assertTrue(mdSettings.getIonAdducts().containsAll(expectedIonAdducts));
     }
 }

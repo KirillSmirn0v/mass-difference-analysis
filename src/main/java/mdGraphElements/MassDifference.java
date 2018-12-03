@@ -69,7 +69,7 @@ public class MassDifference {
         for (Map.Entry<Element, Integer> entry : formula.entrySet()) {
             sb.append(entry.getKey().getName());
             int amount = entry.getValue();
-            if (amount > 1) {
+            if (amount != 1) {
                 sb.append(amount);
             }
         }

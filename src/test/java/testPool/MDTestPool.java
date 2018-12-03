@@ -124,10 +124,14 @@ public class MDTestPool {
         }
 
         formulaStrings = new ArrayList<>();
-        formulaStrings.add("CH2");
+        formulaStrings.add("C");
         formulaStrings.add("O");
+        formulaStrings.add("N2");
+        formulaStrings.add("CH2");
         formulaStrings.add("HN-1");
         formulaStrings.add("H2");
+        formulaStrings.add("C2H5OH");
+        formulaStrings.add("NH3");
 
         int idMassDifference = 1;
         for (String formulaString : formulaStrings) {
@@ -148,7 +152,12 @@ public class MDTestPool {
             if (!matcherElements.group(2).isEmpty()) {
                 elementCount = Integer.parseInt(matcherElements.group(2));
             }
-            formula.put(elementMap.get(elementName), elementCount);
+            Element element = elementMap.get(elementName);
+            if (formula.containsKey(element)) {
+                formula.put(element, formula.get(element) + elementCount);
+            } else {
+                formula.put(element, elementCount);
+            }
         }
         return formula;
     }
