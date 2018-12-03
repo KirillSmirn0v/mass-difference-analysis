@@ -13,6 +13,7 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import testPool.MDTestPool;
 
 import java.io.File;
 import java.io.IOException;
@@ -24,31 +25,25 @@ import java.util.Set;
 public class MDPreprocessorTest {
     private MDPreprocessor mdPreprocessor = null;
     private MDGraphSettingsInterface mockMDGraphSettings = null;
-    private List<ExpMass> mockExpMasses = null;
 
     @Before
     public void before() {
-        mockExpMasses = new ArrayList<>();
-        mockExpMasses.add(new ExpMass(10, 100 ));
-        mockExpMasses.add(new ExpMass(20, 200));
-        mockExpMasses.add(new ExpMass(30, 300));
+        List<ExpMass> mockExpMasses =
+                MDTestPool.getInstance().getExpMassPool("C6H12O6_[M+H]+", "C7H14O6_[M+Na]+", "C6H12O8_[M+Na]+");
+        Set<IonAdduct> mockIonAdducts =
+                MDTestPool.getInstance().getIonAdductPool("[M+H]+", "[M+Na]+");
 
-        Set<IonAdduct> ionAdducts = new HashSet<>();
-        ionAdducts.add(new IonAdduct("[M+55]", IonAdduct.IonSign.POSITIVE, 55.0));
-        ionAdducts.add(new IonAdduct("[M-33]+", IonAdduct.IonSign.POSITIVE, -33.0));
         mockMDGraphSettings = new MockMDGraphSettings() {
             @Override
             public Set<IonAdduct> getIonAdducts() {
-                return ionAdducts;
+                return mockIonAdducts;
             }
         };
-
         mdPreprocessor = new MDPreprocessor(mockExpMasses, mockMDGraphSettings);
     }
 
     @After
     public void after() {
-        mockExpMasses = null;
         mockMDGraphSettings = null;
         mdPreprocessor = null;
     }
@@ -57,18 +52,13 @@ public class MDPreprocessorTest {
     public void test_runPreprocessing_createsCorrectMassWrappers() {
         mdPreprocessor.runPreprocessing();
 
-        List<Double> expectedValues = new ArrayList<>();
-        expectedValues.add(45.0);
-        expectedValues.add(133.0);
-        expectedValues.add(145.0);
-        expectedValues.add(233.0);
-        expectedValues.add(245.0);
-        expectedValues.add(333.0);
+        List<MassWrapper> expectedMassWrappers = MDTestPool.getInstance().getMassWrapperPool(
+                "C6H12O6_[M+H]+_[M+H]+", "C7H14O6_[M+Na]+_[M+H]+", "C6H12O8_[M+Na]+_[M+H]+",
+                "C6H12O6_[M+H]+_[M+Na]+", "C7H14O6_[M+Na]+_[M+Na]+", "C6H12O8_[M+Na]+_[M+Na]+"
+        );
 
         List<MassWrapper> massWrappers = mdPreprocessor.getMassWrappers();
-        Assert.assertEquals(6, massWrappers.size());
-        for (int i = 0; i < massWrappers.size(); i++) {
-            Assert.assertEquals(expectedValues.get(i), massWrappers.get(i).getMass(), 0.0);
-        }
+        Assert.assertEquals(expectedMassWrappers.size(), massWrappers.size());
+        Assert.assertTrue(massWrappers.containsAll(expectedMassWrappers));
     }
 }
