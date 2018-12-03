@@ -1,3 +1,5 @@
+package testPool;
+
 import mdCoreData.ExpMass;
 import mdCoreElements.Element;
 import mdCoreElements.IonAdduct;
@@ -22,7 +24,7 @@ public class MDTestPool {
         initialize();
     }
 
-    public MDTestPool getInstance() {
+    public static MDTestPool getInstance() {
         return mdTestPool;
     }
 

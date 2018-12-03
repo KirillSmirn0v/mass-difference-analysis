@@ -1,0 +1,13 @@
+element:    H   1.0078250   1
+element:    O   15.994915   2
+element:    C   12          4
+
+ion:    [M-H]-   -1.007276   NEG
+ion:    [M+Na]+  22.989221   POS
+
+element:    H   1.0078250   1
+element:    O   15.994915   2
+element:    C   12          4
+
+ion:    [M-H]-   -1.007276   NEG
+ion:    [M+Na]+  22.989221   POS

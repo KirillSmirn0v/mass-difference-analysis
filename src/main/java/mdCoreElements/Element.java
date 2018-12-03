@@ -27,6 +27,7 @@ public class Element {
         return valency;
     }
 
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -34,13 +35,18 @@ public class Element {
 
         Element element = (Element) o;
 
+        if (Double.compare(element.mass, mass) != 0) return false;
         if (valency != element.valency) return false;
-        return name.equals(element.name);
+        return name != null ? name.equals(element.name) : element.name == null;
     }
 
     @Override
     public int hashCode() {
-        int result = name.hashCode();
+        int result;
+        long temp;
+        result = name != null ? name.hashCode() : 0;
+        temp = Double.doubleToLongBits(mass);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + valency;
         return result;
     }
