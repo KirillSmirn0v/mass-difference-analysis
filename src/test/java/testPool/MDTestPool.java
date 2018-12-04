@@ -92,7 +92,9 @@ public class MDTestPool {
         List<String> formulaStrings = new ArrayList<>();
         formulaStrings.add("C6H12O6");
         formulaStrings.add("C7H14O6");
+        formulaStrings.add("C7H14O7");
         formulaStrings.add("C8H16O6");
+        formulaStrings.add("C7H14O8");
         formulaStrings.add("C6H12O7");
         formulaStrings.add("C6H12O8");
         formulaStrings.add("C6H11O6N");
@@ -139,6 +141,7 @@ public class MDTestPool {
                 formulaString,
                 new MassDifference(idMassDifference, formulaString, string2Formula(formulaString))
             );
+            idMassDifference++;
         }
     }
 
