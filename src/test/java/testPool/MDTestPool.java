@@ -143,21 +143,19 @@ public class MDTestPool {
 
         // mass differences
         formulaStrings = new ArrayList<>();
-        formulaStrings.add("C");      // id = 1
-        formulaStrings.add("O");      // id = 2
-        formulaStrings.add("N2");     // id = 3
-        formulaStrings.add("CH2");    // id = 4
-        formulaStrings.add("HN-1");   // id = 5
-        formulaStrings.add("H2");     // id = 6
-        formulaStrings.add("C2H5OH"); // id = 7
-        formulaStrings.add("NH3");    // id = 8
-        int idMassDifference = 1;
+        formulaStrings.add("C");
+        formulaStrings.add("O");
+        formulaStrings.add("N2");
+        formulaStrings.add("CH2");
+        formulaStrings.add("HN-1");
+        formulaStrings.add("H2");
+        formulaStrings.add("C2H5OH");
+        formulaStrings.add("NH3");
         for (String formulaString : formulaStrings) {
             massDifferenceMap.put(
                 formulaString,
-                new MassDifference(idMassDifference, formulaString, string2Formula(formulaString))
+                new MassDifference(formulaString, string2Formula(formulaString))
             );
-            idMassDifference++;
         }
 
         // reference masses

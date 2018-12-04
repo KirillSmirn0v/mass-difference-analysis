@@ -3,8 +3,10 @@ package mdGraphElements;
 import mdCoreElements.Element;
 import mdCoreElements.MDSettingsInterface;
 import mdCoreElements.MockMDSettings;
-import org.junit.*;
-import org.junit.rules.ExpectedException;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 import testPool.MDTestPool;
 
 import java.io.File;
@@ -12,7 +14,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 

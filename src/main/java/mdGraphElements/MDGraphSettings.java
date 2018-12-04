@@ -30,16 +30,15 @@ public class MDGraphSettings implements MDGraphSettingsInterface {
         // set the default list of mass differences
         Set<Element> elements = mdSettings.getElements();
         Iterator<Element> elementIterator = elements.iterator();
-        int id = 1;
         while (elementIterator.hasNext()) {
             Element element = elementIterator.next();
             Map<Element, Integer> formula = new HashMap<>();
-            if (element.getValency() % 2 == 0) {
-                formula.put(element, 1);
-            } else {
-                formula.put(element, 2);
-            }
-            MassDifference massDifference = new MassDifference(id, element.getName(), formula);
+
+            int elementAmount = element.getValency() % 2 == 0 ? 1 : 2;
+            String massDifferenceName = elementAmount == 1 ? element.getName() : element.getName() + "2";
+            formula.put(element, elementAmount);
+            MassDifference massDifference = new MassDifference(massDifferenceName, formula);
+
             massDifferences.add(massDifference);
         }
 
@@ -85,7 +84,7 @@ public class MDGraphSettings implements MDGraphSettingsInterface {
                 }
             }
 
-            MassDifference massDifference = new MassDifference(id, line, formula);
+            MassDifference massDifference = new MassDifference(line, formula);
             this.massDifferences.add(massDifference);
             id++;
         }

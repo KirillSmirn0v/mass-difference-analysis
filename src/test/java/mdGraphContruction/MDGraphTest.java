@@ -57,30 +57,29 @@ public class MDGraphTest {
 
     @Test
     public void test_createEdges_correctEdgesAreCreated() {
-        Map<Integer, List<Pair<Integer, Integer>>> expectedIdMap = new HashMap<>();
-        List<Pair<Integer, Integer>> expectedIdList;
-        expectedIdList = new ArrayList<>();
-        expectedIdList.add(new Pair<>(0, 1));
-        expectedIdList.add(new Pair<>(0, 3));
-        expectedIdMap.put(4, expectedIdList);
-        expectedIdList = new ArrayList<>();
-        expectedIdList.add(new Pair<>(1, 2));
-        expectedIdList.add(new Pair<>(1, 4));
-        expectedIdList.add(new Pair<>(2, 5));
-        expectedIdList.add(new Pair<>(3, 4));
-        expectedIdList.add(new Pair<>(4, 5));
-        expectedIdMap.put(2, expectedIdList);
+        Map<String, List<Pair<Integer, Integer>>> expectedMassDifferenceMap = new HashMap<>();
+        List<Pair<Integer, Integer>> expectedIndxList;
+        expectedIndxList = new ArrayList<>();
+        expectedIndxList.add(new Pair<>(0, 1));
+        expectedIndxList.add(new Pair<>(0, 3));
+        expectedMassDifferenceMap.put("CH2", expectedIndxList);
+        expectedIndxList = new ArrayList<>();
+        expectedIndxList.add(new Pair<>(1, 2));
+        expectedIndxList.add(new Pair<>(1, 4));
+        expectedIndxList.add(new Pair<>(2, 5));
+        expectedIndxList.add(new Pair<>(3, 4));
+        expectedIndxList.add(new Pair<>(4, 5));
+        expectedMassDifferenceMap.put("O", expectedIndxList);
 
         mdGraph.createEdges();
         List<MassEdge> massEdges = mdGraph.getMassEdges();
         Assert.assertEquals(7, massEdges.size());
         for (MassEdge massEdge : massEdges) {
-            int idMassDifference = massEdge.getMassDifference().getId();
-            if (expectedIdMap.containsKey(idMassDifference)) {
-                List<Pair<Integer, Integer>> expectedPairs = expectedIdMap.get(idMassDifference);
-                int idSource = massEdge.getSource();
-                int idTarget = massEdge.getTarget();
-                Pair<Integer, Integer> pair = new Pair<>(idSource, idTarget);
+            if (expectedMassDifferenceMap.containsKey(massEdge.getMassDifference().getName())) {
+                List<Pair<Integer, Integer>> expectedPairs = expectedMassDifferenceMap.get(massEdge.getMassDifference().getName());
+                int indxSource = massEdge.getSource();
+                int indxTarget = massEdge.getTarget();
+                Pair<Integer, Integer> pair = new Pair<>(indxSource, indxTarget);
                 Assert.assertTrue(expectedPairs.contains(pair));
             } else {
                 Assert.fail();

@@ -7,13 +7,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class MassDifference {
-    private int id;
     private String name;
     private Map<Element, Integer> formula;
     private double mass;
 
-    public MassDifference(int id, String name, Map<Element, Integer> formula) {
-        this.id = id;
+    public MassDifference(String name, Map<Element, Integer> formula) {
         this.name = name;
         this.formula = formula;
         this.mass = MDUtils.getMassFromFormula(formula);
@@ -25,14 +23,9 @@ public class MassDifference {
         for (Map.Entry<Element, Integer> entry : formula.entrySet()) {
             formulaCopy.put(entry.getKey(), entry.getValue());
         }
-        this.id = massDifference.getId();
         this.name = massDifference.getName();
         this.formula = formulaCopy;
         this.mass = massDifference.getMass();
-    }
-
-    public int getId() {
-        return id;
     }
 
     public String getName() {
@@ -67,15 +60,13 @@ public class MassDifference {
 
         MassDifference that = (MassDifference) o;
 
-        if (id != that.id) return false;
         if (name != null ? !name.equals(that.name) : that.name != null) return false;
         return formula != null ? formula.equals(that.formula) : that.formula == null;
     }
 
     @Override
     public int hashCode() {
-        int result = id;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
+        int result = name != null ? name.hashCode() : 0;
         result = 31 * result + (formula != null ? formula.hashCode() : 0);
         return result;
     }
