@@ -55,7 +55,9 @@ public class MDAssigner {
         for (MassWrapper massWrapper : massWrappers) {
             final MassWrapper massWrapperFinal = massWrapper;
             List<RefMass> refMassesFiltered = refMasses.stream()
-                    .filter(x -> Math.abs((massWrapperFinal.getMass()/x.getMass() - 1)) * 1000000 > mdAssignmentSettings.getRefError()).collect(Collectors.toList());
+                    .filter(x ->
+                            Math.abs((massWrapperFinal.getMass()/x.getMass() - 1)) * 1000000 < mdAssignmentSettings.getRefError() &&
+                            massWrapperFinal.getIonAdduct().equals(x.getIonAdduct())).collect(Collectors.toList());
             if (refMassesFiltered.size() == 1) {
                 MassAssigned massAssigned = new MassAssigned(massWrapper, false);
                 massAssigned.setFormula(refMassesFiltered.get(0).getFormula());

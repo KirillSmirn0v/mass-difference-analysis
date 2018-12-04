@@ -10,21 +10,27 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import testPool.MDTestPool;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class MDAssignerTest {
     private MDGraphInterface mockMDGraph;
     private MDAssignmentSettingsInterface mockMDAssignmentSettings;
     private MDAssigner mdAssigner;
 
-    private IonAdduct adduct1 = new IonAdduct("Adduct1", IonAdduct.IonSign.POSITIVE, 50.0);
-    private IonAdduct adduct2 = new IonAdduct("Adduct2", IonAdduct.IonSign.NEGATIVE, -30.0);
-
     @Before
     public void before() {
+        List<MassWrapper> mockMassWrappers = MDTestPool.getInstance().getMassWrapperPool(
+            "C6H12O6_[M-H]-_[M-H]-", "C6H12O6_[M+Cl]-_[M+Cl]-", "C6H12O7_[M-H]-_[M-H]-",
+            "C7H14O6_[M-H]-_[M-H]-", "C7H14O6_[M+Cl]-_[M+Cl]-", "C8H16O6_[M-H]-_[M-H]-",
+            "C7H14O7_[M+Cl]-_[M+Cl]-", "C7H14O8_[M-H]-_[M-H]-", "C6H11O6N_[M+Cl]-_[M+Cl]-"
+        );
+        List<RefMass> mockRefMasses = MDTestPool.getInstance().getRefMassPool("C6H12O6_[M-H]-", "C6H12O6_[M+Cl]-", "C6H12O7_[M-H]-");
 
         mockMDAssignmentSettings = new MockMDAssignmentSettings() {
             @Override
@@ -34,28 +40,14 @@ public class MDAssignerTest {
 
             @Override
             public List<RefMass> getRefMasses() {
-                RefMass refMass1 = new RefMass(new HashMap<>(), 100.0, adduct1);
-                RefMass refMass2 = new RefMass(new HashMap<>(), 200.0, adduct2);
-                List<RefMass> refMasses = new ArrayList<>();
-                refMasses.add(refMass1);
-                refMasses.add(refMass2);
-                return refMasses;
+                return mockRefMasses;
             }
         };
 
         mockMDGraph = new MockMDGraph() {
             @Override
             public List<MassWrapper> getMassWrappers() {
-                MassWrapper massWrapper1 = new MassWrapper(new ExpMass(1, 100.0), adduct1);
-                MassWrapper massWrapper2 = new MassWrapper(new ExpMass(2, 200.0), adduct1);
-                MassWrapper massWrapper3 = new MassWrapper(new ExpMass(3, 200.0), adduct2);
-                MassWrapper massWrapper4 = new MassWrapper(new ExpMass(4, 300.0), adduct2);
-                List<MassWrapper> massWrappers = new ArrayList<>();
-                massWrappers.add(massWrapper1);
-                massWrappers.add(massWrapper2);
-                massWrappers.add(massWrapper3);
-                massWrappers.add(massWrapper4);
-                return massWrappers;
+                return mockMassWrappers;
             }
         };
 
@@ -71,16 +63,15 @@ public class MDAssignerTest {
 
     @Test
     public void test_init_hasReferenceMasses_rightAmountOfUnmodifiableAssignedMasses() {
-        List<MassAssigned> massAssignedList = mdAssigner.getMassAssignedList();
-        List<Pair<Double, Boolean>> expectedPairs = new ArrayList<>();
-        expectedPairs.add(new Pair<>(50.0, false));
-        expectedPairs.add(new Pair<>(150.0, true));
-        expectedPairs.add(new Pair<>(230.0, false));
-        expectedPairs.add(new Pair<>(330.0, true));
+        List<MassWrapper> expectedMassWrappers = MDTestPool.getInstance().getMassWrapperPool(
+            "C6H12O6_[M-H]-_[M-H]-", "C6H12O6_[M+Cl]-_[M+Cl]-", "C6H12O7_[M-H]-_[M-H]-"
+        );
 
-        for (int i = 0; i < massAssignedList.size(); i++) {
-            Assert.assertEquals(expectedPairs.get(i).getKey(), massAssignedList.get(i).getMassWrapper().getMass(), 0.0);
-            Assert.assertEquals(expectedPairs.get(i).getValue(), massAssignedList.get(i).isModifiable());
-        }
+        List<MassAssigned> massAssignedList = mdAssigner.getMassAssignedList();
+        List<MassWrapper> actualMassWrappers = massAssignedList.stream()
+            .filter(x -> expectedMassWrappers.contains(x.getMassWrapper()) && !x.isModifiable())
+            .map(MassAssigned::getMassWrapper).collect(Collectors.toList());
+
+        Assert.assertEquals(expectedMassWrappers.size(), actualMassWrappers.size());
     }
 }
