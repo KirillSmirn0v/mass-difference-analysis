@@ -1,9 +1,6 @@
 package mdGraphAssignment;
 
-import javafx.util.Pair;
-import mdCoreData.ExpMass;
 import mdCoreElements.Element;
-import mdCoreElements.IonAdduct;
 import mdGraphConstruction.MDGraphInterface;
 import mdGraphConstruction.MassEdge;
 import mdGraphConstruction.MassWrapper;
@@ -21,7 +18,7 @@ import java.util.stream.Collectors;
 public class MDAssignerTest {
     private MDGraphInterface mockMDGraph;
     private MDAssignmentSettingsInterface mockMDAssignmentSettings;
-    private MDAssigner mdAssigner;
+    private MDAssignerInterface mdAssigner;
 
     @Before
     public void before() {

@@ -10,7 +10,7 @@ import utils.MDUtils;
 import java.util.*;
 import java.util.stream.Collectors;
 
-public class MDAssigner {
+public class MDAssigner implements MDAssignerInterface {
     private MDGraphInterface mdGraph;
     private MDAssignmentSettingsInterface mdAssignmentSettings;
     private List<MassAssigned> massAssignedList;
@@ -26,10 +26,12 @@ public class MDAssigner {
         findReferenceMasses(mdGraph.getMassWrappers(), mdAssignmentSettings.getRefMasses());
     }
 
+    @Override
     public void setSeed(long seed) {
         random.setSeed(seed);
     }
 
+    @Override
     public void runAssignmentAlgorithm() {
         List<MassEdge> massEdges = mdGraph.getMassEdges();
         initEdgeFailuresMap(massEdges);
@@ -149,6 +151,7 @@ public class MDAssigner {
         return true;
     }
 
+    @Override
     public List<MassAssigned> getMassAssignedList() {
         return massAssignedList;
     }
