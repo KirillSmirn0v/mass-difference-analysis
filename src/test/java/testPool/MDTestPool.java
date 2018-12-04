@@ -3,6 +3,7 @@ package testPool;
 import mdCoreData.ExpMass;
 import mdCoreElements.Element;
 import mdCoreElements.IonAdduct;
+import mdGraphAssignment.RefMass;
 import mdGraphConstruction.MassWrapper;
 import mdGraphElements.MassDifference;
 import utils.MDUtils;
@@ -17,6 +18,7 @@ public class MDTestPool {
     private Map<String, ExpMass> expMassMap = new TreeMap<>();
     private Map<String, MassWrapper> massWrapperMap = new TreeMap<>();
     private Map<String, MassDifference> massDifferenceMap = new TreeMap<>();
+    private Map<String, RefMass> refMassMap = new TreeMap<>();
 
     private static MDTestPool mdTestPool = new MDTestPool();
 
@@ -78,27 +80,40 @@ public class MDTestPool {
         return massDifferences;
     }
 
+    public List<RefMass> getRefMassPool(String ... refMassNames) {
+        List<RefMass> refMasses = new ArrayList<>();
+        for (String refMassName : refMassNames) {
+            if (refMassMap.keySet().contains(refMassName)) {
+                refMasses.add(refMassMap.get(refMassName));
+            }
+        }
+        return refMasses;
+    }
+
     private void initialize() {
+        // elements
         elementMap.put("C", new Element("C", 12.000000, 4));
         elementMap.put("H", new Element("H", 1.0078250, 1));
         elementMap.put("O", new Element("O", 15.994915, 2));
         elementMap.put("N", new Element("N", 14.003074, 3));
 
+        // ion adducts
         ionAdductMap.put("[M+H]+", new IonAdduct("[M+H]+", IonAdduct.IonSign.POSITIVE, 1.007276));
         ionAdductMap.put("[M+Na]+", new IonAdduct("[M+Na]+", IonAdduct.IonSign.POSITIVE, 22.989221));
         ionAdductMap.put("[M-H]-", new IonAdduct("[M-H]-", IonAdduct.IonSign.NEGATIVE, -1.007276));
         ionAdductMap.put("[M+Cl]-", new IonAdduct("[M+Cl]-", IonAdduct.IonSign.NEGATIVE, 34.969401));
 
+        // experimental masses
         List<String> formulaStrings = new ArrayList<>();
-        formulaStrings.add("C6H12O6");
-        formulaStrings.add("C7H14O6");
-        formulaStrings.add("C7H14O7");
-        formulaStrings.add("C8H16O6");
-        formulaStrings.add("C7H14O8");
-        formulaStrings.add("C6H12O7");
-        formulaStrings.add("C6H12O8");
-        formulaStrings.add("C6H11O6N");
-        formulaStrings.add("C6H10O6N2");
+        formulaStrings.add("C6H12O6");   // id =  1 [M+H]+, id =  2 [M+Na]+, id =  3 [M-H]-, id =  4 [M+Cl]-
+        formulaStrings.add("C7H14O6");   // id =  5 [M+H]+, id =  6 [M+Na]+, id =  7 [M-H]-, id =  8 [M+Cl]-
+        formulaStrings.add("C7H14O7");   // id =  9 [M+H]+, id = 10 [M+Na]+, id = 11 [M-H]-, id = 12 [M+Cl]-
+        formulaStrings.add("C8H16O6");   // id = 13 [M+H]+, id = 14 [M+Na]+, id = 15 [M-H]-, id = 16 [M+Cl]-
+        formulaStrings.add("C7H14O8");   // id = 17 [M+H]+, id = 18 [M+Na]+, id = 19 [M-H]-, id = 20 [M+Cl]-
+        formulaStrings.add("C6H12O7");   // id = 21 [M+H]+, id = 22 [M+Na]+, id = 23 [M-H]-, id = 24 [M+Cl]-
+        formulaStrings.add("C6H12O8");   // id = 25 [M+H]+, id = 26 [M+Na]+, id = 27 [M-H]-, id = 28 [M+Cl]-
+        formulaStrings.add("C6H11O6N");  // id = 29 [M+H]+, id = 30 [M+Na]+, id = 31 [M-H]-, id = 32 [M+Cl]-
+        formulaStrings.add("C6H10O6N2"); // id = 33 [M+H]+, id = 34 [M+Na]+, id = 35 [M-H]-, id = 36 [M+Cl]-
         int idExpMass = 1;
         for (String formulaString : formulaStrings) {
             Map<Element, Integer> formula = string2Formula(formulaString);
@@ -111,6 +126,7 @@ public class MDTestPool {
             }
         }
 
+        // mass wrappers
         Set<String> ionAdductMapKeys = ionAdductMap.keySet();
         Set<String> expMassMapKeys = expMassMap.keySet();
         for (String expMassMapKey : expMassMapKeys) {
@@ -125,16 +141,16 @@ public class MDTestPool {
             }
         }
 
+        // mass differences
         formulaStrings = new ArrayList<>();
-        formulaStrings.add("C");
-        formulaStrings.add("O");
-        formulaStrings.add("N2");
-        formulaStrings.add("CH2");
-        formulaStrings.add("HN-1");
-        formulaStrings.add("H2");
-        formulaStrings.add("C2H5OH");
-        formulaStrings.add("NH3");
-
+        formulaStrings.add("C");      // id = 1
+        formulaStrings.add("O");      // id = 2
+        formulaStrings.add("N2");     // id = 3
+        formulaStrings.add("CH2");    // id = 4
+        formulaStrings.add("HN-1");   // id = 5
+        formulaStrings.add("H2");     // id = 6
+        formulaStrings.add("C2H5OH"); // id = 7
+        formulaStrings.add("NH3");    // id = 8
         int idMassDifference = 1;
         for (String formulaString : formulaStrings) {
             massDifferenceMap.put(
@@ -142,6 +158,21 @@ public class MDTestPool {
                 new MassDifference(idMassDifference, formulaString, string2Formula(formulaString))
             );
             idMassDifference++;
+        }
+
+        // reference masses
+        formulaStrings = new ArrayList<>();
+        formulaStrings.add("C6H12O6");
+        formulaStrings.add("C6H12O7");
+        for (String formulaString : formulaStrings) {
+            Map<Element, Integer> formula = string2Formula(formulaString);
+            for (IonAdduct ionAdduct : ionAdductMap.values()) {
+                double mass = MDUtils.getMassFromFormula(formula) + ionAdduct.getMass();
+                refMassMap.put(
+                        formulaString + "_" + ionAdduct.getName(),
+                        new RefMass(formula, mass, ionAdduct)
+                );
+            }
         }
     }
 

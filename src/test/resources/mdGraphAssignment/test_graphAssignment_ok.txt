@@ -1,7 +1,6 @@
-reference:  C2H5OH  50.0    [One]
-reference:  CCO2CH  100     [Two]
-reference:  CH5N    150.0   [One]
-reference:  CH2     200.0   [Three]
+reference:  C6H12O6  181.070666 [M+H]+
+reference:  C6H12O7  195.051029 [M-H]-
+reference:  C6H12O6  203.052611 [M+Na]+
 
 reference error: 0.1
 max assignment error: 0.1

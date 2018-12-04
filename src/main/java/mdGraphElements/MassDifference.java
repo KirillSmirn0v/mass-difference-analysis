@@ -47,22 +47,6 @@ public class MassDifference {
         return mass;
     }
 
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        MassDifference that = (MassDifference) o;
-
-        return formula.equals(that.formula);
-    }
-
-    @Override
-    public int hashCode() {
-        return formula.hashCode();
-    }
-
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
@@ -74,5 +58,25 @@ public class MassDifference {
             }
         }
         return sb.toString();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MassDifference that = (MassDifference) o;
+
+        if (id != that.id) return false;
+        if (name != null ? !name.equals(that.name) : that.name != null) return false;
+        return formula != null ? formula.equals(that.formula) : that.formula == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (formula != null ? formula.hashCode() : 0);
+        return result;
     }
 }

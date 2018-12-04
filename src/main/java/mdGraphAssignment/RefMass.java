@@ -27,4 +27,22 @@ public class RefMass {
     public IonAdduct getIonAdduct() {
         return ionAdduct;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        RefMass refMass = (RefMass) o;
+
+        if (formula != null ? !formula.equals(refMass.formula) : refMass.formula != null) return false;
+        return ionAdduct != null ? ionAdduct.equals(refMass.ionAdduct) : refMass.ionAdduct == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = formula != null ? formula.hashCode() : 0;
+        result = 31 * result + (ionAdduct != null ? ionAdduct.hashCode() : 0);
+        return result;
+    }
 }

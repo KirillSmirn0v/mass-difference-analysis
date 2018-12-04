@@ -8,15 +8,14 @@ import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import testPool.MDTestPool;
+import utils.MDUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class MDAssignmentSettingsTest {
     private static final Path BASE_PATH = Paths.get("src/test/resources");
@@ -25,22 +24,19 @@ public class MDAssignmentSettingsTest {
     private MDSettingsInterface mockMDSettings;
     private MDAssignmentSettingsInterface mdAssignmentSettings;
 
-    private Element element1 = new Element("C", 1.0, 1);
-    private Element element2 = new Element("H", 2.0, 2);
-    private Element element3 = new Element("O", 3.0, 3);
-    private IonAdduct adduct1 = new IonAdduct("[One]", IonAdduct.IonSign.POSITIVE, 0.2);
-    private IonAdduct adduct2 = new IonAdduct("[Two]", IonAdduct.IonSign.NEGATIVE, -0.3);
-
     @Before
     public void before() {
+        Set<Element> mockElements = MDTestPool.getInstance().getElementPool("C", "H", "O");
         Map<String, Element> mockName2ElementMap = new HashMap<>();
-        mockName2ElementMap.put("C", element1);
-        mockName2ElementMap.put("H", element2);
-        mockName2ElementMap.put("O", element3);
+        for (Element mockElement : mockElements) {
+            mockName2ElementMap.put(mockElement.getName(), mockElement);
+        }
 
+        Set<IonAdduct> mockIonAdducts = MDTestPool.getInstance().getIonAdductPool("[M+H]+", "[M-H]-");
         Map<String, IonAdduct> mockName2IonAdductMap = new HashMap<>();
-        mockName2IonAdductMap.put("[One]", adduct1);
-        mockName2IonAdductMap.put("[Two]", adduct2);
+        for (IonAdduct mockIonAdduct : mockIonAdducts) {
+            mockName2IonAdductMap.put(mockIonAdduct.getName(), mockIonAdduct);
+        }
 
         mockMDSettings = new MockMDSettings() {
             @Override
@@ -65,6 +61,9 @@ public class MDAssignmentSettingsTest {
     @Test
     public void test_fileHasCorrectDataFormat_correctDataIsRead() {
         try {
+            List<RefMass> expectedRefMasses =
+                    MDTestPool.getInstance().getRefMassPool("C6H12O6_[M+H]+", "C6H12O7_[M-H]-");
+
             mdAssignmentSettings.readSettingsFromFile(TEST_GRAPHASSIGNMENT_OK);
             List<RefMass> refMasses = mdAssignmentSettings.getRefMasses();
             double refError = mdAssignmentSettings.getRefError();
@@ -73,33 +72,9 @@ public class MDAssignmentSettingsTest {
             int maxEdgeInconsistencies = mdAssignmentSettings.getMaxEdgeInconsistencies();
             int maxSameIterations = mdAssignmentSettings.getMaxSameIterations();
 
-            List<Map<Element, Integer>> expectedFormulas = new ArrayList<>();
-            Map<Element, Integer> formula;
-            formula = new HashMap<>();
-            formula.put(element1, 2);
-            formula.put(element2, 6);
-            formula.put(element3, 1);
-            expectedFormulas.add(formula);
-            formula = new HashMap<>();
-            formula.put(element1, 3);
-            formula.put(element2, 1);
-            formula.put(element3, 2);
-            expectedFormulas.add(formula);
-
-            List<Double> expectedMasses = new ArrayList<>();
-            expectedMasses.add(49.8);
-            expectedMasses.add(100.3);
-
-            List<IonAdduct> expectedIonAdducts = new ArrayList<>();
-            expectedIonAdducts.add(adduct1);
-            expectedIonAdducts.add(adduct2);
-
             Assert.assertEquals(2, refMasses.size());
-            for (int i = 0; i < refMasses.size(); i++) {
-                Assert.assertEquals(expectedFormulas.get(i), refMasses.get(i).getFormula());
-                Assert.assertEquals(expectedMasses.get(i), refMasses.get(i).getMass(), 0.0);
-                Assert.assertEquals(expectedIonAdducts.get(i), refMasses.get(i).getIonAdduct());
-            }
+            Assert.assertTrue(refMasses.containsAll(expectedRefMasses));
+
             Assert.assertEquals(0.1, refError, 0.0);
             Assert.assertEquals(0.1, maxAssignentError, 0.0);
             Assert.assertEquals(0.2, maxDiffError, 0.0);

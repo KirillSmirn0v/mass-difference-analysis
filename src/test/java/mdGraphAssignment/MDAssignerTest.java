@@ -25,6 +25,7 @@ public class MDAssignerTest {
 
     @Before
     public void before() {
+
         mockMDAssignmentSettings = new MockMDAssignmentSettings() {
             @Override
             public double getRefError() {
