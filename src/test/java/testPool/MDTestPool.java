@@ -147,7 +147,7 @@ public class MDTestPool {
         formulaStrings.add("O");
         formulaStrings.add("N2");
         formulaStrings.add("CH2");
-        formulaStrings.add("HN-1");
+        formulaStrings.add("NH-1");
         formulaStrings.add("H2");
         formulaStrings.add("C2H5OH");
         formulaStrings.add("NH3");
@@ -174,7 +174,7 @@ public class MDTestPool {
         }
     }
 
-    private Map<Element, Integer> string2Formula(String name) {
+    public Map<Element, Integer> string2Formula(String name) {
         Map<Element, Integer> formula = new HashMap<>();
         Pattern patternElements = Pattern.compile("([A-Z][a-z]?)(-?\\d*)");
         Matcher matcherElements = patternElements.matcher(name);

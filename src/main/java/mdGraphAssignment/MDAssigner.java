@@ -17,6 +17,7 @@ public class MDAssigner {
     private Map<MassEdge, Integer> edgeFailuresMap = new HashMap<>();
     private int countStableIterations;
     private boolean isStable = true;
+    private Random random = new Random();
 
     public MDAssigner(MDGraphInterface mdGraph, MDAssignmentSettingsInterface mdAssignmentSettings) {
         this.mdGraph = mdGraph;
@@ -25,12 +26,16 @@ public class MDAssigner {
         findReferenceMasses(mdGraph.getMassWrappers(), mdAssignmentSettings.getRefMasses());
     }
 
+    public void setSeed(long seed) {
+        random.setSeed(seed);
+    }
+
     public void runAssignmentAlgorithm() {
         List<MassEdge> massEdges = mdGraph.getMassEdges();
         initEdgeFailuresMap(massEdges);
 
         while (countStableIterations < mdAssignmentSettings.getMaxSameIterations()) {
-            Collections.shuffle(massEdges);
+            Collections.shuffle(massEdges, random);
             for (MassEdge massEdge : massEdges) {
                 if (edgeFailuresMap.get(massEdge) < mdAssignmentSettings.getMaxEdgeInconsistencies()) {
                     MassAssigned source = massAssignedList.get(massEdge.getSource());
@@ -41,12 +46,12 @@ public class MDAssigner {
                     if (!isSourceTargetEdgeTrustful || !isTargetSourceEdgeTrustful) {
                         edgeFailuresMap.put(massEdge, edgeFailuresMap.get(massEdge) + 1);
                     }
-                    if (isStable) {
-                        countStableIterations++;
-                    } else {
-                        countStableIterations = 0;
-                    }
                 }
+            }
+            if (isStable) {
+                countStableIterations++;
+            } else {
+                countStableIterations = 0;
             }
         }
     }
@@ -77,7 +82,7 @@ public class MDAssigner {
     }
 
     private boolean assumeSourceTargetAssignment(MassAssigned source, MassAssigned target, MassDifference massDifference) {
-        if (!source.isAssigned() && target.isAssigned()) {
+        if (source.isAssigned() && !target.isAssigned()) {
             isStable = false;
             double massSource = source.getMassWrapper().getMass();
             double massSourceAssumed = source.getMass();
@@ -93,24 +98,16 @@ public class MDAssigner {
             boolean isAssignmentErrorAcceptable = Math.abs(ppmErrorTargetAssignment) < mdAssignmentSettings.getMaxAssignmentError();
             boolean isDiffErrorAcceptable = Math.abs(ppmErrorSourceAssignment - ppmErrorTargetAssignment) < mdAssignmentSettings.getMaxDiffError();
 
-            if (target.isModifiable()) {
-                if (isValidFormula && isAssignmentErrorAcceptable && isDiffErrorAcceptable) {
-                    target.setFormula(formulaTargetAssumed);
-                    target.setAssigned(true);
-                    return true;
-                } else {
-                    source.setFormula(new HashMap<>());
-                    source.setAssigned(false);
-                    return false;
-                }
+            if (isValidFormula && isAssignmentErrorAcceptable && isDiffErrorAcceptable) {
+                target.setFormula(formulaTargetAssumed);
+                target.setAssigned(true);
+                return true;
             } else {
-                if (formulaTargetAssumed.equals(target.getFormula())) {
-                    return true;
-                } else {
+                if (source.isModifiable()) {
                     source.setFormula(new HashMap<>());
                     source.setAssigned(false);
-                    return false;
                 }
+                return false;
             }
         } else {
             isStable = true;
@@ -119,7 +116,7 @@ public class MDAssigner {
     }
 
     private boolean assumeTargetSourceAssignment(MassAssigned source, MassAssigned target, MassDifference massDifference) {
-        if (source.isAssigned() && !target.isAssigned()) {
+        if (!source.isAssigned() && target.isAssigned()) {
             isStable = false;
             Map<Element, Integer> formulaSourceAssumed = MDUtils.subtractSecondFormulaFromFirst(target.getFormula(), massDifference.getFormula());
             double massSource = source.getMassWrapper().getMass();
@@ -135,24 +132,16 @@ public class MDAssigner {
             boolean isAssignmentErrorAcceptable = Math.abs(ppmErrorSourceAssignment) < mdAssignmentSettings.getMaxAssignmentError();
             boolean isDiffErrorAcceptable = Math.abs(ppmErrorSourceAssignment - ppmErrorTargetAssignment) < mdAssignmentSettings.getMaxDiffError();
 
-            if (source.isModifiable()) {
-                if (isValidFormula && isAssignmentErrorAcceptable && isDiffErrorAcceptable) {
-                    source.setFormula(formulaSourceAssumed);
-                    source.setAssigned(true);
-                    return true;
-                } else {
-                    target.setFormula(new HashMap<>());
-                    target.setAssigned(false);
-                    return false;
-                }
+            if (isValidFormula && isAssignmentErrorAcceptable && isDiffErrorAcceptable) {
+                source.setFormula(formulaSourceAssumed);
+                source.setAssigned(true);
+                return true;
             } else {
-                if (formulaSourceAssumed.equals(source.getFormula())) {
-                    return true;
-                } else {
+                if (target.isModifiable()) {
                     target.setFormula(new HashMap<>());
                     target.setAssigned(false);
-                    return false;
                 }
+                return false;
             }
         } else {
             isStable = true;

@@ -21,27 +21,33 @@ public class MDUtils {
 
     public static Map<Element, Integer> addSecondFormulaToFirst(Map<Element, Integer> formula1, Map<Element, Integer> formula2) {
         Map<Element, Integer> formula = new HashMap<>();
+        for (Map.Entry<Element, Integer> entry : formula1.entrySet()) {
+            formula.put(entry.getKey(), entry.getValue());
+        }
 
         Set<Element> elements = formula1.keySet();
         for (Map.Entry<Element, Integer> entry : formula2.entrySet()) {
             Element otherElement = entry.getKey();
             if (elements.contains(otherElement)) {
-                formula.put(otherElement, formula1.get(otherElement) + formula2.get(otherElement));
+                formula.put(otherElement, formula.get(otherElement) + formula2.get(otherElement));
             } else {
                 formula.put(otherElement, formula2.get(otherElement));
             }
         }
-        return formula1;
+        return formula;
     }
 
     public static Map<Element, Integer> subtractSecondFormulaFromFirst(Map<Element, Integer> formula1, Map<Element, Integer> formula2) {
         Map<Element, Integer> formula = new HashMap<>();
+        for (Map.Entry<Element, Integer> entry : formula1.entrySet()) {
+            formula.put(entry.getKey(), entry.getValue());
+        }
 
         Set<Element> elements = formula1.keySet();
         for (Map.Entry<Element, Integer> entry : formula2.entrySet()) {
             Element otherElement = entry.getKey();
             if (elements.contains(otherElement)) {
-                formula.put(otherElement, formula1.get(otherElement) - formula2.get(otherElement));
+                formula.put(otherElement, formula.get(otherElement) - formula2.get(otherElement));
             } else {
                 formula.put(otherElement, -formula2.get(otherElement));
             }
