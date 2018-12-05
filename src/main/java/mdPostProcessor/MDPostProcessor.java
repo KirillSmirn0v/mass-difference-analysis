@@ -26,22 +26,34 @@ public class MDPostProcessor implements MDPostProcessorInterface {
         massProcessedList = new ArrayList<>();
 
         List<MassAssigned> massAssignedList = mdAssigner.getMassAssignedList();
-        Set<Map<Element, Integer>> formulas = massAssignedList.stream().map(MassAssigned::getFormula).collect(Collectors.toSet());
-
-        for (Map<Element, Integer> formula : formulas) {
-            List<MassWrapper> massWrappers =
-                    massAssignedList.stream()
-                            .filter(x -> formulas.contains(x.getFormula()))
-                            .map(MassAssigned::getMassWrapper).collect(Collectors.toList());
-            MassProcessed massProcessed = new MassProcessed(massWrappers, formula, MDUtils.getMassFromFormula(formula));
-            massProcessedList.add(massProcessed);
-        }
-
-        massProcessedList.sort((massProcessed1, massProcessed2) -> {
-            double diff = massProcessed2.getMass() - massProcessed1.getMass();
-            if (diff > 0) { return -1; }
-            return 1;
+        massAssignedList.sort((x1, x2) -> {
+           double diff = x2.getMass() - x1.getMass();
+           if (diff > 0) { return -1; }
+           if (diff < 0) { return 1; }
+           return 0;
         });
+
+        int id = 1;
+        Map<Element, Integer> formula = massAssignedList.get(0).getFormula();
+        List<MassWrapper> massWrappers = new ArrayList<>();
+        for (MassAssigned massAssigned : massAssignedList) {
+            if (massAssigned.getFormula().equals(formula)) {
+                massWrappers.add(massAssigned.getMassWrapper());
+            } else {
+                MassProcessed massProcessed = new MassProcessed(
+                    id,
+                    massWrappers,
+                    formula,
+                    MDUtils.getMassFromFormula(formula)
+                );
+                massProcessedList.add(massProcessed);
+                id++;
+                formula = massAssigned.getFormula();
+                massWrappers = new ArrayList<>();
+                massWrappers.add(massAssigned.getMassWrapper());
+
+            }
+        }
     }
 
     @Override
