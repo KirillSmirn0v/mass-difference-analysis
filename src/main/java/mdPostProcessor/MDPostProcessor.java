@@ -3,19 +3,21 @@ package mdPostProcessor;
 import mdCoreElements.Element;
 import mdGraphAssignment.MDAssignerInterface;
 import mdGraphAssignment.MassAssigned;
+import mdGraphConstruction.MassEdge;
 import mdGraphConstruction.MassWrapper;
+import mdGraphElements.MassDifference;
 import utils.MDUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class MDPostProcessor implements MDPostProcessorInterface {
 
     private MDAssignerInterface mdAssigner;
     private List<MassProcessed> massProcessedList = new ArrayList<>();
+    private List<MassEdge> massEdges = new ArrayList<>();
 
     public MDPostProcessor(MDAssignerInterface mdAssigner) {
         this.mdAssigner = mdAssigner;
@@ -58,12 +60,29 @@ public class MDPostProcessor implements MDPostProcessorInterface {
     }
 
     @Override
-    public void rebuildNetwork() {
-
+    public void rebuildNetwork(Set<MassDifference> massDifferences) {
+        massEdges = new ArrayList<>();
+        for (MassDifference massDifference : massDifferences) {
+            for (int i = 0; i < massProcessedList.size() - 1; i++) {
+                Map<Element, Integer> source = massProcessedList.get(i).getFormula();
+                for (int j = (i + 1); j < massProcessedList.size(); j++) {
+                    Map<Element, Integer> target = massProcessedList.get(j).getFormula();
+                    if (MDUtils.addSecondFormulaToFirst(source, massDifference.getFormula()).equals(target)) {
+                        MassEdge massEdge = new MassEdge(i, j, massDifference);
+                        massEdges.add(massEdge);
+                    }
+                }
+            }
+        }
     }
 
     @Override
     public List<MassProcessed> getMassProcessedList() {
         return massProcessedList;
+    }
+
+    @Override
+    public List<MassEdge> getMassEdges() {
+        return massEdges;
     }
 }
