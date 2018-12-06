@@ -1,8 +1,13 @@
 package mdPostProcessor;
 
+import javafx.util.Pair;
+import mdCoreElements.Element;
 import mdGraphAssignment.MDAssignerInterface;
 import mdGraphAssignment.MassAssigned;
 import mdGraphAssignment.MockMDAssigner;
+import mdGraphConstruction.MassEdge;
+import mdGraphConstruction.MassWrapper;
+import mdGraphElements.MassDifference;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
@@ -10,8 +15,7 @@ import org.junit.Test;
 import testPool.MDTestPool;
 import utils.MDUtils;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public class MDPostProcessorTest {
     private MDAssignerInterface mockMDAssigner;
@@ -83,5 +87,56 @@ public class MDPostProcessorTest {
         );
 
         Assert.assertEquals(expectedMassProcessedList, massProcessedList);
+    }
+
+    @Test
+    public void test_rebuildNetwork_massEdges_returnsCorrectAmount() {
+        List<MassProcessed> massProcessedList = mdPostProcessor.getMassProcessedList();
+        massProcessedList.clear();
+        Assert.assertTrue(mdPostProcessor.getMassProcessedList().isEmpty());
+
+        List<MassWrapper> emptyArray = new ArrayList<>();
+        Map<Element, Integer> formula;
+
+        formula = MDTestPool.getInstance().string2Formula("C6H12O6");
+        massProcessedList.add(new MassProcessed(1, emptyArray, formula, MDUtils.getMassFromFormula(formula)));
+        formula = MDTestPool.getInstance().string2Formula("C7H14O6");
+        massProcessedList.add(new MassProcessed(2, emptyArray, formula, MDUtils.getMassFromFormula(formula)));
+        formula = MDTestPool.getInstance().string2Formula("C6H12O7");
+        massProcessedList.add(new MassProcessed(3, emptyArray, formula, MDUtils.getMassFromFormula(formula)));
+        formula = MDTestPool.getInstance().string2Formula("C7H14O7");
+        massProcessedList.add(new MassProcessed(4, emptyArray, formula, MDUtils.getMassFromFormula(formula)));
+        formula = MDTestPool.getInstance().string2Formula("C8H16O7");
+        massProcessedList.add(new MassProcessed(5, emptyArray, formula, MDUtils.getMassFromFormula(formula)));
+
+        Set<MassDifference> massDifferences = MDTestPool.getInstance().getMassDifferencePool("CH2", "O");
+
+        mdPostProcessor.rebuildNetwork(massDifferences);
+        List<MassEdge> massEdges = mdPostProcessor.getMassEdges();
+
+        Map<String, List<Pair<Integer, Integer>>> expectedMassDifferenceMap = new HashMap<>();
+        List<Pair<Integer, Integer>> expectedIndxList;
+        expectedIndxList = new ArrayList<>();
+        expectedIndxList.add(new Pair<>(0, 1));
+        expectedIndxList.add(new Pair<>(2, 3));
+        expectedIndxList.add(new Pair<>(3, 4));
+        expectedMassDifferenceMap.put("CH2", expectedIndxList);
+        expectedIndxList = new ArrayList<>();
+        expectedIndxList.add(new Pair<>(0, 2));
+        expectedIndxList.add(new Pair<>(1, 3));
+        expectedMassDifferenceMap.put("O", expectedIndxList);
+
+        Assert.assertEquals(5, massEdges.size());
+        for (MassEdge massEdge : massEdges) {
+            if (expectedMassDifferenceMap.containsKey(massEdge.getMassDifference().getName())) {
+                List<Pair<Integer, Integer>> expectedPairs = expectedMassDifferenceMap.get(massEdge.getMassDifference().getName());
+                int indxSource = massEdge.getSource();
+                int indxTarget = massEdge.getTarget();
+                Pair<Integer, Integer> pair = new Pair<>(indxSource, indxTarget);
+                Assert.assertTrue(expectedPairs.contains(pair));
+            } else {
+                Assert.fail();
+            }
+        }
     }
 }
