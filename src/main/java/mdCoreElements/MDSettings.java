@@ -17,9 +17,9 @@ public class MDSettings implements MDSettingsInterface {
     private Map<String, IonAdduct> name2IonAdductMap;
 
     public MDSettings() {
-        elements = new HashSet<>();
+        elements = new LinkedHashSet<>();
         name2ElementMap = new HashMap<>();
-        ionAdducts = new HashSet<>();
+        ionAdducts = new LinkedHashSet<>();
         name2IonAdductMap = new HashMap<>();
         setDefaults();
     }
@@ -80,9 +80,9 @@ public class MDSettings implements MDSettingsInterface {
     }
 
     private void readElementsAndIonAdducts(Scanner scanner) {
-        elements = new HashSet<>();
+        elements = new LinkedHashSet<>();
         name2ElementMap = new HashMap<>();
-        ionAdducts = new HashSet<>();
+        ionAdducts = new LinkedHashSet<>();
 
         while (scanner.hasNextLine()) {
             String line = scanner.nextLine();
