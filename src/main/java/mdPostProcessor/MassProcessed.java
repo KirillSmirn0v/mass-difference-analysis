@@ -34,4 +34,24 @@ public class MassProcessed {
     public double getMass() {
         return mass;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        MassProcessed that = (MassProcessed) o;
+
+        if (id != that.id) return false;
+        if (massWrappers != null ? !massWrappers.equals(that.massWrappers) : that.massWrappers != null) return false;
+        return formula != null ? formula.equals(that.formula) : that.formula == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (massWrappers != null ? massWrappers.hashCode() : 0);
+        result = 31 * result + (formula != null ? formula.hashCode() : 0);
+        return result;
+    }
 }

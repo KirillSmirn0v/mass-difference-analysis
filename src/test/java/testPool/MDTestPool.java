@@ -3,6 +3,7 @@ package testPool;
 import mdCoreData.ExpMass;
 import mdCoreElements.Element;
 import mdCoreElements.IonAdduct;
+import mdGraphAssignment.MassAssigned;
 import mdGraphAssignment.RefMass;
 import mdGraphConstruction.MassWrapper;
 import mdGraphElements.MassDifference;
@@ -19,6 +20,7 @@ public class MDTestPool {
     private Map<String, MassWrapper> massWrapperMap = new TreeMap<>();
     private Map<String, MassDifference> massDifferenceMap = new TreeMap<>();
     private Map<String, RefMass> refMassMap = new TreeMap<>();
+    private Map<String, MassAssigned> massAssignedMap = new TreeMap<>();
 
     private static MDTestPool mdTestPool = new MDTestPool();
 
@@ -90,6 +92,16 @@ public class MDTestPool {
         return refMasses;
     }
 
+    public List<MassAssigned> getMassAssignedPool(String ... massAssignedNames) {
+        List<MassAssigned> massAssignedList = new ArrayList<>();
+        for (String massAssignedName : massAssignedNames) {
+            if (massAssignedMap.keySet().contains(massAssignedName)) {
+                massAssignedList.add(massAssignedMap.get(massAssignedName));
+            }
+        }
+        return massAssignedList;
+    }
+
     private void initialize() {
         // elements
         elementMap.put("C", new Element("C", 12.000000, 4));
@@ -126,18 +138,22 @@ public class MDTestPool {
             }
         }
 
-        // mass wrappers
+        // mass wrappers and assigned masses
         Set<String> ionAdductMapKeys = ionAdductMap.keySet();
         Set<String> expMassMapKeys = expMassMap.keySet();
         for (String expMassMapKey : expMassMapKeys) {
             for (String ionAdductMapKey : ionAdductMapKeys) {
-                massWrapperMap.put(
-                    expMassMapKey + "_" + ionAdductMapKey,
-                    new MassWrapper(
-                        expMassMap.get(expMassMapKey),
-                        ionAdductMap.get(ionAdductMapKey)
-                    )
-                );
+                String key = expMassMapKey + "_" + ionAdductMapKey;
+
+                // mass wrappers
+                MassWrapper massWrapper = new MassWrapper(expMassMap.get(expMassMapKey), ionAdductMap.get(ionAdductMapKey));
+                massWrapperMap.put(key, massWrapper);
+
+                // assigned masses
+                MassAssigned massAssigned = new MassAssigned(massWrapper, true);
+                massAssigned.setFormula(string2Formula(expMassMapKey.split("_")[0]));
+                massAssigned.setAssigned(true);
+                massAssignedMap.put(key, massAssigned);
             }
         }
 

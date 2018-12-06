@@ -51,13 +51,19 @@ public class MDPostProcessor implements MDPostProcessorInterface {
                 formula = massAssigned.getFormula();
                 massWrappers = new ArrayList<>();
                 massWrappers.add(massAssigned.getMassWrapper());
-
             }
         }
+        MassProcessed massProcessed = new MassProcessed(id, massWrappers, formula, MDUtils.getMassFromFormula(formula));
+        massProcessedList.add(massProcessed);
     }
 
     @Override
     public void rebuildNetwork() {
 
+    }
+
+    @Override
+    public List<MassProcessed> getMassProcessedList() {
+        return massProcessedList;
     }
 }
